@@ -26,7 +26,7 @@ function App() {
       if (filters.distance) params.append("distance", filters.distance);
       if (filters.address) params.append("address", filters.address);
 
-      const response = await fetch(`${API_URL}/cafes?${params.toString()}`);
+      const response = await fetch(`${API_URL}/search?${params.toString()}`);
       const data = await response.json();
 
       if (data.status === "success") {
