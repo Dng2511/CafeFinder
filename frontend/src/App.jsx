@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import CafeCard from "./components/CafeCard";
 import "./App.css";
@@ -59,34 +61,42 @@ function App() {
   };
 
   return (
-    <div className="app-container">
-      <SearchBar
-        filters={filters}
-        onFilterChange={setFilters}
-        onSearch={handleSearch}
-      />
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      <Header />
+      
+      <main className="flex-grow">
+        <div className="app-container">
+          <SearchBar
+            filters={filters}
+            onFilterChange={setFilters}
+            onSearch={handleSearch}
+          />
 
-      <div className="results-container">
-        <div className="results-header">
-          <h2 className="results-title">検索結果（{cafes.length}件）</h2>
-        </div>
+          <div className="results-container">
+            <div className="results-header">
+              <h2 className="results-title">検索結果（{cafes.length}件）</h2>
+            </div>
 
-        {loading ? (
-          <div className="loading">読み込み中...</div>
-        ) : cafes.length === 0 ? (
-          <div className="no-results">検索結果がありません</div>
-        ) : (
-          <div className="cafe-list">
-            {cafes.map((cafe) => (
-              <CafeCard
-                key={cafe.id}
-                cafe={cafe}
-                onDetailClick={handleDetailClick}
-              />
-            ))}
+            {loading ? (
+              <div className="loading">読み込み中...</div>
+            ) : cafes.length === 0 ? (
+              <div className="no-results">検索結果がありません</div>
+            ) : (
+              <div className="cafe-list">
+                {cafes.map((cafe) => (
+                  <CafeCard
+                    key={cafe.id}
+                    cafe={cafe}
+                    onDetailClick={handleDetailClick}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }
