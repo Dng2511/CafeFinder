@@ -1,5 +1,7 @@
 const { Sequelize } = require("sequelize");
 const Cafe = require("../../models/Cafe");
+const MenuItem = require("../../models/MenuItem");
+const CafeImage = require("../../models/CafeImage");
 
 exports.index = async (req, res) => {
   try {
@@ -81,6 +83,9 @@ exports.searchById = async (req, res) => {
       });
     }
 
+    const menuItems = await MenuItem.findAll({ where: { cafe_id: id } });
+    const cafeImages = await CafeImage.findAll({ where: { cafe_id: id } });
+
     // Success response with standardized format
     return res.status(200).json({
       status: "success",
@@ -94,11 +99,15 @@ exports.searchById = async (req, res) => {
           open_time: cafe.open_time,
           close_time: cafe.close_time,
         },
-        main_image: cafe.main_image,
         amenities: {
           has_wifi: cafe.has_wifi,
           has_parking: cafe.has_parking,
           has_air_conditioning: cafe.has_air_conditioning,
+        },
+        menu: menuItems,
+        images: {
+          main_image: cafe.main_image,
+          additional_images: cafeImages,
         },
         created_at: cafe.createdAt,
         updated_at: cafe.updatedAt,
