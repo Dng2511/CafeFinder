@@ -21,6 +21,7 @@ CREATE TABLE menu_items (
     cafe_id INT NOT NULL REFERENCES cafes(id) ON DELETE CASCADE,
     item_name VARCHAR(255) NOT NULL,
     price NUMERIC(10, 2) NOT NULL,
+    rating INT NOT NULL DEFAULT 0,
     image TEXT
 );
 
