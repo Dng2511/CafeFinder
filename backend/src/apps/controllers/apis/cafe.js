@@ -1,7 +1,8 @@
-const { Sequelize } = require("sequelize");
+const sequelize = require("../../../common/database")
 const Cafe = require("../../models/Cafe");
 const MenuItem = require("../../models/MenuItem");
 const CafeImage = require("../../models/CafeImage");
+const openai = require("../../../libs/openai");
 
 exports.index = async (req, res) => {
   try {
@@ -17,7 +18,7 @@ exports.index = async (req, res) => {
       const keyword = (req.query.search || "").toLowerCase();
 
       // Map keyword sang filter boolean
-      const filters = {};
+      /* const filters = {};
       if (keyword.includes("do-xe") || keyword.includes("parking")) {
         filters.has_parking = true;
       }
@@ -26,10 +27,10 @@ exports.index = async (req, res) => {
       }
       if (keyword.includes("may-lanh") || keyword.includes("air")) {
         filters.has_air_conditioning = true;
-      }
+      } */
 
       // Query
-      const cafes = await Cafe.findAll({
+      /* const cafes = await Cafe.findAll({
         where: {
           ...filters,
           [Sequelize.Op.or]: Sequelize.literal(`
@@ -41,13 +42,16 @@ exports.index = async (req, res) => {
         order: Sequelize.literal(`
         similarity(unaccent(lower(name)), unaccent(lower('${keyword}'))) DESC
       `),
-      });
+      }); */
+      const sql = await openai.generateCafeSearchSQL(keyword);
+      console.log("Generated SQL:", sql);
+      const cafes = await sequelize.query(sql);
 
-      res.json({
+      return res.json({
         status: "success",
         message: "Search completed successfully",
-        count: cafes.length,
-        data: cafes,
+        count: cafes[0].length,
+        data: cafes[0],
       });
     }
   } catch (error) {
