@@ -5,6 +5,7 @@ CREATE TABLE cafes (
     name VARCHAR(255) NOT NULL,
     address TEXT NOT NULL,
     phone_number VARCHAR(20),
+    category VARCHAR(50),
 
     open_time TIME,
     close_time TIME,
@@ -14,7 +15,10 @@ CREATE TABLE cafes (
     rating_count INT NOT NULL DEFAULT 0,
     has_wifi BOOLEAN DEFAULT FALSE,
     has_parking BOOLEAN DEFAULT FALSE,
-    has_air_conditioning BOOLEAN DEFAULT FALSE
+    has_air_conditioning BOOLEAN DEFAULT FALSE,
+    has_power_outlet BOOLEAN DEFAULT FALSE,
+    is_quiet BOOLEAN DEFAULT FALSE,
+    no_smoking BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE menu_items (
