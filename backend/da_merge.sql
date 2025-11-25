@@ -10,7 +10,8 @@ CREATE TABLE cafes (
     close_time TIME,
 
     main_image TEXT,
-
+    rating INT NOT NULL DEFAULT 0,
+    rating_count INT NOT NULL DEFAULT 0,
     has_wifi BOOLEAN DEFAULT FALSE,
     has_parking BOOLEAN DEFAULT FALSE,
     has_air_conditioning BOOLEAN DEFAULT FALSE
@@ -22,6 +23,7 @@ CREATE TABLE menu_items (
     item_name VARCHAR(255) NOT NULL,
     price NUMERIC(10, 2) NOT NULL,
     rating INT NOT NULL DEFAULT 0,
+    rating_count INT NOT NULL DEFAULT 0,
     image TEXT
 );
 

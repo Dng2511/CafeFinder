@@ -6,6 +6,7 @@ const MenuItem = sequelize.define('MenuItem', {
   item_name: { type: DataTypes.STRING, allowNull: false },
   price: { type: DataTypes.DECIMAL(10,2), allowNull: false },
   rating: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+  rating_count: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
   image: { type: DataTypes.TEXT }
 }, {
   tableName: 'menu_items',

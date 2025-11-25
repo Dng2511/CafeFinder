@@ -73,8 +73,8 @@ const CafeDetail = () => {
         <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
           <div className="flex items-center text-yellow-500">
             <Star className="w-4 h-4 fill-current" />
-            <span className="ml-1 font-medium">4.5</span>
-            <span className="text-gray-400 ml-1">(120件のレビュー)</span>
+            <span className="ml-1 font-medium">{cafe?.rating ?? 0}</span>
+            <span className="text-gray-400 ml-1">({cafe?.rating_count ?? 0}件のレビュー)</span>
           </div>
           <div className="flex gap-2">
             {cafe.amenities?.has_wifi && <Badge variant="secondary">無料Wi-Fi</Badge>}
@@ -134,6 +134,49 @@ const CafeDetail = () => {
                  </>
               )}
             </div>
+          </section>
+
+          {/* Menu */}
+          <section>
+            <h2 className="text-xl font-bold mb-4">メニュー</h2>
+            {cafe.menu && cafe.menu.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {cafe.menu.map((item) => (
+                  <Card key={item.id}>
+                    <CardContent className="pt-6">
+                      <div className="flex gap-4">
+                        <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                          <img
+                            src={item.image || "https://placehold.co/200x200?text=Menu"}
+                            alt={item.item_name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex justify-between items-start">
+                            <h4 className="font-semibold text-sm">{item.item_name}</h4>
+                            <span className="text-sm font-medium">¥{item.price}</span>
+                          </div>
+                          <div className="flex items-center text-xs mt-2">
+                            <div className="flex text-yellow-500">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`w-3 h-3 ${i < (item.rating || 0) ? "fill-current" : "text-gray-300"}`}
+                                />
+                              ))}
+                            </div>
+                            <span className="ml-2 text-gray-500">({item.rating_count || 0}件)</span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-sm text-gray-600">メニュー情報はありません</div>
+            )}
           </section>
 
           {/* Reviews */}
