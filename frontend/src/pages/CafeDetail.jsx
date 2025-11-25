@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Star, MapPin, Clock, Phone, Wifi, Car, Wind, ThumbsUp, MessageSquare, Share2, Navigation } from "lucide-react";
+import { Star, MapPin, Clock, Phone, Wifi, Car, Wind, ThumbsUp, MessageSquare, Share2, Navigation, Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +13,8 @@ const CafeDetail = () => {
   const { id } = useParams();
   const [cafe, setCafe] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("drink");
+  const [menuSearch, setMenuSearch] = useState("");
   const [reviews, setReviews] = useState([
     {
       id: 1,
@@ -65,11 +67,16 @@ const CafeDetail = () => {
   if (loading) return <div className="p-8 text-center">読み込み中...</div>;
   if (!cafe) return <div className="p-8 text-center">カフェが見つかりません</div>;
 
+  const filteredMenu = cafe.menu?.filter(item => 
+    item.item_name.toLowerCase().includes(menuSearch.toLowerCase())
+  ) || [];
+
   return (
     <div className="container mx-auto p-4 max-w-6xl">
       {/* Header Section */}
-      <div className="mb-6">
+      <div className="mb-6 bg-white p-6 rounded-lg shadow-sm border">
         <h1 className="text-3xl font-bold mb-2">{cafe.name}</h1>
+        <p className="text-gray-500 text-sm mb-3">ブルーボトル風・自家焙煎／静かな作業席／無料Wi-Fi</p>
         <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
           <div className="flex items-center text-yellow-500">
             <Star className="w-4 h-4 fill-current" />
@@ -77,23 +84,24 @@ const CafeDetail = () => {
             <span className="text-gray-400 ml-1">(120件のレビュー)</span>
           </div>
           <div className="flex gap-2">
-            {cafe.amenities?.has_wifi && <Badge variant="secondary">無料Wi-Fi</Badge>}
-            {cafe.amenities?.has_parking && <Badge variant="secondary">駐車場あり</Badge>}
-            {cafe.amenities?.has_air_conditioning && <Badge variant="secondary">冷暖房完備</Badge>}
+            {cafe.amenities?.has_wifi && <Badge variant="secondary" className="bg-gray-100 text-gray-600 hover:bg-gray-200"><Wifi className="w-3 h-3 mr-1"/> 無料Wi-Fi</Badge>}
+            {cafe.amenities?.has_parking && <Badge variant="secondary" className="bg-gray-100 text-gray-600 hover:bg-gray-200"><Car className="w-3 h-3 mr-1"/> 駐車場</Badge>}
+            {cafe.amenities?.has_air_conditioning && <Badge variant="secondary" className="bg-gray-100 text-gray-600 hover:bg-gray-200"><Wind className="w-3 h-3 mr-1"/> 冷暖房</Badge>}
+            <Badge variant="secondary" className="bg-gray-100 text-gray-600 hover:bg-gray-200">テイクアウト</Badge>
           </div>
         </div>
         
-        <div className="flex gap-2 mb-6">
-          <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-            <ThumbsUp className="w-4 h-4" /> お気に入りに追加
+        <div className="flex gap-2">
+          <Button className="gap-2 rounded-full px-6 text-white">
+            お気に入りに追加
           </Button>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2 rounded-full">
             <Share2 className="w-4 h-4" /> 共有
           </Button>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2 rounded-full">
             <Phone className="w-4 h-4" /> 電話
           </Button>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2 rounded-full">
             <Navigation className="w-4 h-4" /> 経路
           </Button>
         </div>
@@ -102,8 +110,109 @@ const CafeDetail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8">
+          
+          {/* Menu Section */}
+          <section className="bg-white p-6 rounded-lg shadow-sm border">
+            <h2 className="text-xl font-bold mb-4">メニュー</h2>
+            
+            {/* Search and Filter */}
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
+              <div className="flex-1">
+                <label className="text-xs text-gray-500 mb-1 block">メニュー検索</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input 
+                    placeholder="例）ラテ、モカ、ケーキ" 
+                    className="pl-9 bg-gray-50 border-gray-200"
+                    value={menuSearch}
+                    onChange={(e) => setMenuSearch(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="w-full md:w-32">
+                <label className="text-xs text-gray-500 mb-1 block">温度</label>
+                <select className="w-full h-10 px-3 rounded-md border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                  <option>指定なし</option>
+                  <option>ホット</option>
+                  <option>アイス</option>
+                </select>
+              </div>
+              <div className="w-full md:w-32">
+                <label className="text-xs text-gray-500 mb-1 block">並び替え</label>
+                <select className="w-full h-10 px-3 rounded-md border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                  <option>人気順</option>
+                  <option>価格が安い順</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex gap-2 mb-6 border-b border-gray-100 pb-1">
+              {['drink', 'food', 'dessert'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-2 rounded-full text-sm font-medium transition-colors ${
+                    activeTab === tab 
+                      ? "bg-primary text-white" 
+                      : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                  }`}
+                >
+                  {tab === 'drink' ? 'ドリンク' : tab === 'food' ? 'フード' : 'デザート'}
+                </button>
+              ))}
+            </div>
+
+            {/* Menu Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredMenu.map((item) => (
+                <div key={item.id} className="flex gap-4 p-4 border border-gray-100 rounded-xl hover:shadow-md transition-shadow bg-white">
+                  <div className="w-24 h-24 shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                    <img 
+                      src={item.image || "https://placehold.co/150x150?text=Menu"} 
+                      alt={item.item_name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex justify-between items-start mb-1">
+                        <h3 className="font-bold text-gray-900">{item.item_name}</h3>
+                        <span className="font-bold text-gray-900">¥{parseInt(item.price).toLocaleString()}</span>
+                      </div>
+                      <div className="flex gap-1 mb-2">
+                        <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded">ホット</span>
+                        <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded">アイス</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <span>おすすめ度：</span>
+                        <div className="flex text-yellow-400">
+                          <Star className="w-3 h-3 fill-current" />
+                          <Star className="w-3 h-3 fill-current" />
+                          <Star className="w-3 h-3 fill-current" />
+                          <Star className="w-3 h-3 fill-current" />
+                          <Star className="w-3 h-3 text-gray-200" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-end mt-2">
+                      <Button variant="outline" className="h-8 text-xs">
+                        注文へ
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {filteredMenu.length === 0 && (
+                <div className="col-span-2 text-center py-8 text-gray-500">
+                  メニューが見つかりません
+                </div>
+              )}
+            </div>
+          </section>
+
           {/* Photos */}
-          <section>
+          <section className="bg-white p-6 rounded-lg shadow-sm border">
             <h2 className="text-xl font-bold mb-4">写真</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
               {/* Main Image */}
@@ -118,7 +227,7 @@ const CafeDetail = () => {
               {cafe.images?.additional_images?.slice(0, 4).map((img, idx) => (
                 <div key={idx} className="aspect-square rounded-lg overflow-hidden bg-gray-100">
                   <img 
-                    src={img.url || "https://placehold.co/300x300?text=Image"} 
+                    src={img.image_url || "https://placehold.co/300x300?text=Image"} 
                     alt={`Interior ${idx}`} 
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
@@ -137,59 +246,56 @@ const CafeDetail = () => {
           </section>
 
           {/* Reviews */}
-          <section>
+          <section className="bg-white p-6 rounded-lg shadow-sm border">
             <h2 className="text-xl font-bold mb-4">レビュー</h2>
             
             {/* Add Comment */}
-            <Card className="mb-6">
-              <CardContent className="pt-6">
-                <div className="flex gap-4">
-                  <Avatar>
-                    <AvatarFallback>ME</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 space-y-4">
-                    <Textarea 
-                      placeholder="このカフェの感想をシェアしましょう..." 
-                      value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
-                    />
-                    <div className="flex justify-end">
-                      <Button onClick={handleAddComment}>レビューを投稿</Button>
-                    </div>
+            <div className="mb-6 bg-gray-50 p-4 rounded-lg">
+              <div className="flex gap-4">
+                <Avatar>
+                  <AvatarFallback>ME</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-3">
+                  <Textarea 
+                    placeholder="このカフェの感想をシェアしましょう..." 
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    className="bg-white"
+                  />
+                  <div className="flex justify-end">
+                    <Button onClick={handleAddComment} className="text-white">レビューを投稿</Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Review List */}
             <div className="space-y-4">
               {reviews.map((review) => (
-                <Card key={review.id}>
-                  <CardContent className="pt-6">
-                    <div className="flex gap-4">
-                      <Avatar>
-                        <AvatarFallback>{review.user[0].toUpperCase()}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <h4 className="font-bold text-sm">{review.user}</h4>
-                            <div className="flex text-yellow-500 text-xs">
-                              {[...Array(5)].map((_, i) => (
-                                <Star 
-                                  key={i} 
-                                  className={`w-3 h-3 ${i < review.rating ? "fill-current" : "text-gray-300"}`} 
-                                />
-                              ))}
-                            </div>
+                <div key={review.id} className="border-b border-gray-100 last:border-0 pb-4 last:pb-0">
+                  <div className="flex gap-4">
+                    <Avatar className="w-10 h-10">
+                      <AvatarFallback className="bg-gray-200 text-gray-600">{review.user[0].toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start mb-1">
+                        <div>
+                          <h4 className="font-bold text-sm text-gray-900">{review.user}</h4>
+                          <div className="flex text-yellow-400 text-xs mt-0.5">
+                            {[...Array(5)].map((_, i) => (
+                              <Star 
+                                key={i} 
+                                className={`w-3 h-3 ${i < review.rating ? "fill-current" : "text-gray-200"}`} 
+                              />
+                            ))}
                           </div>
-                          <span className="text-xs text-gray-500">{review.date}</span>
                         </div>
-                        <p className="text-sm text-gray-700">{review.comment}</p>
+                        <span className="text-xs text-gray-400">{review.date}</span>
                       </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">{review.comment}</p>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               ))}
             </div>
           </section>
@@ -197,73 +303,51 @@ const CafeDetail = () => {
 
         {/* Sidebar Info */}
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">店舗詳細</CardTitle>
+          <Card className="border-none shadow-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-bold">店舗情報</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm">
-              <div className="flex gap-3">
-                <MapPin className="w-5 h-5 text-gray-400 shrink-0" />
-                <div>
-                  <p className="font-medium">住所</p>
-                  <p className="text-gray-600">{cafe.address}</p>
-                </div>
+              <div className="flex gap-4">
+                <span className="text-gray-500 w-16 shrink-0">住所</span>
+                <p className="text-gray-900">{cafe.address}</p>
               </div>
-              <Separator />
-              <div className="flex gap-3">
-                <Clock className="w-5 h-5 text-gray-400 shrink-0" />
+              <div className="flex gap-4">
+                <span className="text-gray-500 w-16 shrink-0">営業時間</span>
                 <div>
-                  <p className="font-medium">営業時間</p>
-                  <p className="text-gray-600">
-                    {cafe.opening_hours?.open_time} - {cafe.opening_hours?.close_time}
+                  <p className="text-gray-900">
+                    {cafe.opening_hours?.open_time?.slice(0, 5)} - {cafe.opening_hours?.close_time?.slice(0, 5)}
                   </p>
-                  <p className="text-xs text-green-600 mt-1">営業中</p>
+                  <p className="text-xs text-gray-500 mt-0.5">(年中無休)</p>
                 </div>
               </div>
-              <Separator />
-              <div className="flex gap-3">
-                <Phone className="w-5 h-5 text-gray-400 shrink-0" />
-                <div>
-                  <p className="font-medium">電話番号</p>
-                  <p className="text-gray-600">{cafe.phone_number || "03-1234-5678"}</p>
-                </div>
+              <div className="flex gap-4">
+                <span className="text-gray-500 w-16 shrink-0">電話</span>
+                <p className="text-gray-900">{cafe.phone_number || "03-1234-5678"}</p>
               </div>
-              <Separator />
-              <div>
-                <p className="font-medium mb-2">設備</p>
-                <div className="flex flex-wrap gap-2">
-                  {cafe.amenities?.has_wifi && (
-                    <div className="flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded">
-                      <Wifi className="w-3 h-3" /> Wi-Fi
-                    </div>
-                  )}
-                  {cafe.amenities?.has_parking && (
-                    <div className="flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded">
-                      <Car className="w-3 h-3" /> 駐車場
-                    </div>
-                  )}
-                  {cafe.amenities?.has_air_conditioning && (
-                    <div className="flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded">
-                      <Wind className="w-3 h-3" /> 冷暖房
-                    </div>
-                  )}
-                </div>
+              <div className="flex gap-4">
+                <span className="text-gray-500 w-16 shrink-0">支払い</span>
+                <p className="text-gray-900">現金 / クレカ / QR</p>
+              </div>
+              <div className="flex gap-4">
+                <span className="text-gray-500 w-16 shrink-0">席数</span>
+                <p className="text-gray-900">48席 (カウンター8 / テーブル40)</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Map Placeholder */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">アクセス</CardTitle>
+          <Card className="border-none shadow-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-bold">アクセス</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="aspect-video bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+              <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 mb-4">
                 地図 (ダミー)
               </div>
-              <div className="mt-4 flex gap-2">
-                <Button variant="outline" className="w-full text-xs">Googleマップを開く</Button>
-                <Button variant="outline" className="w-full text-xs">住所をコピー</Button>
+              <div className="flex flex-col gap-2">
+                <Button variant="outline" className="w-full text-xs h-9 bg-white hover:bg-gray-50">Googleマップを開く</Button>
+                <Button variant="outline" className="w-full text-xs h-9 bg-white hover:bg-gray-50">住所をコピー</Button>
               </div>
             </CardContent>
           </Card>
