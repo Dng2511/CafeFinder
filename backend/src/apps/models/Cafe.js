@@ -9,6 +9,8 @@ const Cafe = sequelize.define('Cafe', {
   open_time: { type: DataTypes.TIME },
   close_time: { type: DataTypes.TIME },
   main_image: { type: DataTypes.TEXT },
+  rating: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+  rating_count: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
   has_wifi: { type: DataTypes.BOOLEAN, defaultValue: false },
   has_parking: { type: DataTypes.BOOLEAN, defaultValue: false },
   has_air_conditioning: { type: DataTypes.BOOLEAN, defaultValue: false }
