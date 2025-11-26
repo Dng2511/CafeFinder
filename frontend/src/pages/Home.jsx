@@ -60,7 +60,6 @@ function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header />
 
       <main className="flex-grow">
         <div className="container mx-auto p-4 max-w-5xl">
@@ -100,7 +99,6 @@ function Home() {
         </div>
       </main>
 
-      <Footer />
     </div>
   );
 }
