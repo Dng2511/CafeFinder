@@ -19,7 +19,9 @@ const SearchBar = ({ filters, onFilterChange, onSearch }) => {
       <div className="flex flex-col gap-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm text-gray-600 font-medium">キーワード</label>
+            <label className="text-sm text-gray-600 font-medium">
+              キーワード
+            </label>
             <input
               type="text"
               className="w-full px-3 py-2.5 border border-gray-200 rounded-md text-sm bg-white text-gray-800 focus:outline-none focus:border-blue-600"
@@ -31,7 +33,9 @@ const SearchBar = ({ filters, onFilterChange, onSearch }) => {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm text-gray-600 font-medium">カテゴリ</label>
+            <label className="text-sm text-gray-600 font-medium">
+              カテゴリ
+            </label>
             <select
               className="w-full px-3 py-2.5 border border-gray-200 rounded-md text-sm bg-white text-gray-800 focus:outline-none focus:border-blue-600"
               value={filters.category}
@@ -51,6 +55,7 @@ const SearchBar = ({ filters, onFilterChange, onSearch }) => {
               value={filters.distance}
               onChange={(e) => handleInputChange("distance", e.target.value)}
             >
+              <option value="すべて">すべて</option>
               <option value="3km以内">3km以内</option>
               <option value="5km以内">5km以内</option>
               <option value="10km以内">10km以内</option>
@@ -72,7 +77,9 @@ const SearchBar = ({ filters, onFilterChange, onSearch }) => {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm text-gray-600 font-medium">営業中のみ</label>
+            <label className="text-sm text-gray-600 font-medium">
+              営業中のみ
+            </label>
             <select
               className="w-full px-3 py-2.5 border border-gray-200 rounded-md text-sm bg-white text-gray-800 focus:outline-none focus:border-blue-600"
               value={filters.openNow}
@@ -83,8 +90,8 @@ const SearchBar = ({ filters, onFilterChange, onSearch }) => {
             </select>
           </div>
 
-          <button 
-            className="w-full px-10 py-2.5 bg-blue-600 text-white rounded-md text-base font-semibold hover:bg-blue-700 transition-colors cursor-pointer" 
+          <button
+            className="w-full px-10 py-2.5 bg-blue-600 text-white rounded-md text-base font-semibold hover:bg-blue-700 transition-colors cursor-pointer"
             onClick={onSearch}
           >
             検索
