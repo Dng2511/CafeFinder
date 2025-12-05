@@ -37,6 +37,14 @@ CREATE TABLE cafe_images (
     image_url TEXT NOT NULL
 );
 
+CREATE TABLE favorites (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    cafe_id INT NOT NULL REFERENCES cafes(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, cafe_id)
+);
+
 INSERT INTO cafes (
     name, address, phone_number,
     open_time, close_time,
