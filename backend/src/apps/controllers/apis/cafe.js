@@ -3,17 +3,14 @@ const Cafe = require("../../models/Cafe");
 const MenuItem = require("../../models/MenuItem");
 const CafeImage = require("../../models/CafeImage");
 const openai = require("../../../libs/openai");
+const findByDistance = require("../../../libs/findByDistance");
 
 exports.index = async (req, res) => {
   try {
+    let returnedCafes = [];
     if (!req.query.search) {
       const cafes = await Cafe.findAll();
-      return res.status(200).json({
-        status: "success",
-        message: "Cafes retrieved successfully",
-        count: cafes.length,
-        data: cafes,
-      });
+      returnedCafes = cafes;
     } else {
       const keyword = (req.query.search || "").toLowerCase();
 
@@ -46,14 +43,26 @@ exports.index = async (req, res) => {
       const sql = await openai.generateCafeSearchSQL(keyword);
       console.log("Generated SQL:", sql);
       const cafes = await sequelize.query(sql);
-
-      return res.json({
+      returnedCafes = cafes[0];
+      
+    }
+    if (req.query.distance){
+      const {lat, lon} = req.query;
+      if (!lat || !lon){
+        return res.status(400).json({
+          status: "error",
+          message: "Latitude and longitude are required for distance filtering",
+          data: null,
+        });
+      }
+      returnedCafes = findByDistance.findNearbyCafes(returnedCafes, parseFloat(lat), parseFloat(lon), parseFloat(req.query.distance));
+    }
+    return res.json({
         status: "success",
         message: "Search completed successfully",
-        count: cafes[0].length,
-        data: cafes[0],
+        count: returnedCafes.length,
+        data: returnedCafes,
       });
-    }
   } catch (error) {
     return res.status(500).json({
       status: "error",
