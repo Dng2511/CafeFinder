@@ -1,6 +1,7 @@
 const Favorite = require("../../models/Favorite");
 const Cafe = require("../../models/Cafe");
 
+
 // Mock data for demo purposes
 const mockFavorites = [
   {
@@ -284,3 +285,4 @@ exports.getFavorites = async (req, res) => {
     });
   }
 };
+
