@@ -59,6 +59,15 @@ CREATE TABLE favorites (
     UNIQUE(user_id, cafe_id)
 );
 
+CREATE TABLE reviews (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    cafe_id INT NOT NULL REFERENCES cafes(id) ON DELETE CASCADE,
+    rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 
 INSERT INTO users (username, email, password_hash, role) VALUES
 ('customer01', 'customer01@example.com', 'hash_customer01', 'customer'),
@@ -72,7 +81,7 @@ INSERT INTO cafes (
     name, address, phone_number,
     open_time, close_time,
     main_image,
-    has_wifi, has_parking, has_air_conditioning
+    has_wifi, has_parking, has_air_conditioning, lat, lon
 ) VALUES
 ('Coffee Haven', '123 Sunset Street, District 1', '0901234567', '07:00', '22:00',
  'cafe1_main.jpg', TRUE, TRUE, FALSE, 21.013570, 105.856342),
