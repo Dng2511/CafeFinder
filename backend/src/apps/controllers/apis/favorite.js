@@ -1,6 +1,73 @@
 const Favorite = require("../../models/Favorite");
 const Cafe = require("../../models/Cafe");
 
+// Mock data for demo purposes
+const mockFavorites = [
+  {
+    id: 1,
+    user_id: 1,
+    cafe_id: 1,
+    created_at: "2025-10-15T08:30:00Z",
+    cafe: {
+      id: 1,
+      name: "ブルースカイ珈琲",
+      address: "千代田1-2-3 / 8:00-20:00 / 電源あり",
+      phone_number: "03-1234-5678",
+      open_time: "08:00:00",
+      close_time: "20:00:00",
+      main_image:
+        "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&q=80",
+      rating: 4.8,
+      rating_count: 156,
+      has_wifi: true,
+      has_parking: true,
+      has_air_conditioning: true,
+    },
+  },
+  {
+    id: 2,
+    user_id: 1,
+    cafe_id: 2,
+    created_at: "2025-09-22T14:20:00Z",
+    cafe: {
+      id: 2,
+      name: "駅前カフェ",
+      address: "渋谷1-4-5 / 9:00-22:00 / Wi-Fi◎",
+      phone_number: "03-2345-6789",
+      open_time: "09:00:00",
+      close_time: "22:00:00",
+      main_image:
+        "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80",
+      rating: 4.2,
+      rating_count: 89,
+      has_wifi: true,
+      has_parking: false,
+      has_air_conditioning: true,
+    },
+  },
+  {
+    id: 3,
+    user_id: 1,
+    cafe_id: 3,
+    created_at: "2025-08-30T10:15:00Z",
+    cafe: {
+      id: 3,
+      name: "森のロースター",
+      address: "渋谷4-8-3 / 7:00-19:00 / テラス席",
+      phone_number: "03-3456-7890",
+      open_time: "07:00:00",
+      close_time: "19:00:00",
+      main_image:
+        "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&q=80",
+      rating: 4.5,
+      rating_count: 124,
+      has_wifi: true,
+      has_parking: true,
+      has_air_conditioning: false,
+    },
+  },
+];
+
 /**
  * POST /favorites
  * Add a cafe to user's favorites list
@@ -91,7 +158,26 @@ exports.removeFavorite = async (req, res) => {
       });
     }
 
-    // Find and delete favorite
+    // Mock delete for demo (user_id = 1)
+    if (user_id == 1) {
+      const index = mockFavorites.findIndex((fav) => fav.cafe_id == cafe_id);
+      if (index !== -1) {
+        mockFavorites.splice(index, 1);
+        return res.status(200).json({
+          status: "success",
+          message: "Cafe removed from favorites successfully",
+          data: null,
+        });
+      } else {
+        return res.status(404).json({
+          status: "error",
+          message: "Favorite not found",
+          data: null,
+        });
+      }
+    }
+
+    // Find and delete favorite from database
     const favorite = await Favorite.findOne({
       where: { user_id, cafe_id },
     });
@@ -137,7 +223,23 @@ exports.getFavorites = async (req, res) => {
       });
     }
 
-    // Get favorites with cafe details
+    // Return mock data for demo (user_id = 1)
+    if (user_id == 1) {
+      return res.status(200).json({
+        status: "success",
+        message: "Favorites retrieved successfully",
+        count: mockFavorites.length,
+        data: mockFavorites.map((fav) => ({
+          id: fav.id,
+          user_id: fav.user_id,
+          cafe_id: fav.cafe_id,
+          created_at: fav.created_at,
+          cafe: fav.cafe,
+        })),
+      });
+    }
+
+    // Get favorites with cafe details from database
     const favorites = await Favorite.findAll({
       where: { user_id },
       include: [
@@ -182,4 +284,3 @@ exports.getFavorites = async (req, res) => {
     });
   }
 };
-
