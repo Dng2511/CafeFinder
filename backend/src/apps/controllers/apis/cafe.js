@@ -10,7 +10,7 @@ exports.index = async (req, res) => {
     let returnedCafes = [];
     if (!req.query.search) {
       const cafes = await Cafe.findAll();
-      returnedCafes = cafes;
+      returnedCafes = cafes.map(cafe => cafe.toJSON());
     } else {
       const keyword = (req.query.search || "").toLowerCase();
 

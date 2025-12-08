@@ -40,6 +40,7 @@ Hãy trả về DUY NHẤT câu SQL, không giải thích.
 Truy vấn phải:
 - tự tạo điều kiện WHERE phù hợp
 - có thể JOIN menu_items khi cần lọc theo giá hoặc món
+- dữ liệu không bị lặp
 - dùng select * hoặc c.* FROM cafes
 
 SQL:
