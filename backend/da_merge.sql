@@ -1,5 +1,5 @@
-DROP DATABASE IF EXISTS CafeFinder;
-CREATE DATABASE CafeFinder;
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
 
 CREATE EXTENSION IF NOT EXISTS unaccent;
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
@@ -112,3 +112,13 @@ INSERT INTO cafe_images (cafe_id, image_url) VALUES
 
 (3, 'cafe3_1.jpg'),
 (3, 'cafe3_2.jpg');
+
+INSERT INTO reviews (user_id, cafe_id, rating, comment) VALUES
+(1, 1, 5, 'Không gian tuyệt vời, nhân viên thân thiện!'),
+(2, 1, 4, 'Cà phê ngon nhưng hơi đông khách vào buổi sáng.'),
+(3, 1, 5, 'Quán sạch sẽ, wifi mạnh, rất thích!'),
+(1, 2, 4, 'Không gian đẹp, chụp ảnh sống ảo rất thích.'),
+(3, 2, 5, 'Matcha latte ngon xuất sắc!'),
+(2, 3, 5, 'Cold brew ở đây rất đậm vị, đúng gu mình.'),
+(3, 3, 4, 'Quán yên tĩnh, phù hợp để học bài.'),
+(1, 3, 5, 'Mocha ngon, nhân viên phục vụ tốt.');

@@ -1,6 +1,5 @@
 const Review = require("../../models/Review");
-const sequelize = require("../../../common/database");
-const { QueryTypes } = require('sequelize');
+const User = require("../../models/User");
 
 exports.store = async (req, res) => {
     try {
@@ -41,8 +40,18 @@ exports.index = async (req, res) => {
         if (!cafe_id) {
             return res.status(400).json({ code: 400, message: "Cafe ID is required" });
         }
-        const reviews = await Review.findAll({cafe_id: cafe_id});
-        
+        const reviews = await Review.findAll({
+            where: { cafe_id: cafe_id },
+            attributes: ["id", "rating", "comment", "created_at"],
+            include: [
+                {
+                    model: User,
+                    attributes: ["id", "username"],
+                    as: "user"
+                }
+            ],
+            order: [["created_at", "DESC"]]
+        });
 
         return res.status(200).json({
             code: 200,
