@@ -38,18 +38,11 @@ exports.store = async (req, res) => {
 exports.index = async (req, res) => {
     try {
         const { cafe_id } = req.params;
-
-        const reviews = await sequelize.query(
-            `SELECT r.id, r.user_id, r.cafe_id, r.rating, r.comment, r.created_at, u.username 
-             FROM reviews r 
-             LEFT JOIN users u ON r.user_id = u.id 
-             WHERE r.cafe_id = :cafe_id 
-             ORDER BY r.created_at DESC`,
-            {
-                replacements: { cafe_id },
-                type: QueryTypes.SELECT
-            }
-        );
+        if (!cafe_id) {
+            return res.status(400).json({ code: 400, message: "Cafe ID is required" });
+        }
+        const reviews = await Review.findAll({cafe_id: cafe_id});
+        
 
         return res.status(200).json({
             code: 200,
