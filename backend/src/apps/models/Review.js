@@ -39,9 +39,10 @@ const Review = sequelize.define('Review', {
   timestamps: false
 });
 
-Cafe.hasMany(Review, { foreignKey: 'cafe_id' });
-Review.belongsTo(Cafe, { foreignKey: 'cafe_id' });
-User.hasMany(Review, { foreignKey: 'user_id' });
-Review.belongsTo(User, { foreignKey: 'user_id' });
+Cafe.hasMany(Review, { foreignKey: 'cafe_id', as: 'reviews' });
+Review.belongsTo(Cafe, { foreignKey: 'cafe_id', as: 'cafe' });
+
+User.hasMany(Review, { foreignKey: 'user_id', as: 'reviews' });
+Review.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 module.exports = Review;
