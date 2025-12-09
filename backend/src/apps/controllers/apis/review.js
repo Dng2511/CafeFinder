@@ -3,10 +3,10 @@ const User = require("../../models/User");
 
 exports.store = async (req, res) => {
     try {
-        const { user_id, cafe_id, rating, comment } = req.body;
+        const { user_id, guest_name, cafe_id, rating, comment } = req.body;
 
         // Validation
-        if (!user_id || !cafe_id || rating === undefined) {
+        if (!cafe_id || rating === undefined) {
             return res.status(400).json({ code: 400, message: "Missing required fields" });
         }
         if (rating < 0 || rating > 5) {
@@ -17,7 +17,8 @@ exports.store = async (req, res) => {
         }
 
         const review = await Review.create({
-            user_id,
+            user_id: user_id || null,
+            guest_name: guest_name || "Guest",
             cafe_id,
             rating,
             comment
@@ -42,7 +43,7 @@ exports.index = async (req, res) => {
         }
         const reviews = await Review.findAll({
             where: { cafe_id: cafe_id },
-            attributes: ["id", "rating", "comment", "created_at"],
+            attributes: ["id", "rating", "comment", "created_at", "guest_name"],
             include: [
                 {
                     model: User,

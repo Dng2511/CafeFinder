@@ -53,7 +53,7 @@ CREATE TABLE cafe_images (
 
 CREATE TABLE favorites (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     cafe_id INT NOT NULL REFERENCES cafes(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, cafe_id)
@@ -61,7 +61,8 @@ CREATE TABLE favorites (
 
 CREATE TABLE reviews (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    guest_name VARCHAR(50),
     cafe_id INT NOT NULL REFERENCES cafes(id) ON DELETE CASCADE,
     rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
     comment TEXT,

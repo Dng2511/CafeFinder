@@ -6,7 +6,11 @@ const User = require('./User');
 const Review = sequelize.define('Review', {
   user_id: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
+  },
+  guest_name: {
+    type: DataTypes.STRING,
+    allowNull: true
   },
   cafe_id: {
     type: DataTypes.INTEGER,

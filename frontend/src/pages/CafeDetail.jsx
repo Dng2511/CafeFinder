@@ -8,6 +8,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 const CafeDetail = () => {
   const { id } = useParams();
@@ -32,6 +42,9 @@ const CafeDetail = () => {
     },
   ]);
   const [newComment, setNewComment] = useState("");
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
 
   useEffect(() => {
     const fetchCafeDetail = async () => {
@@ -40,6 +53,19 @@ const CafeDetail = () => {
         const data = await response.json();
         if (data.status === "success") {
           setCafe(data.data);
+        }
+
+        const reviewsResponse = await fetch(`http://localhost:3000/reviews/${id}`);
+        const reviewsData = await reviewsResponse.json();
+        if (reviewsData.code === 200) {
+          const mappedReviews = reviewsData.data.map((r) => ({
+            id: r.id,
+            user: r.user ? r.user.username : (r.guest_name || "Guest"),
+            rating: r.rating,
+            comment: r.comment,
+            date: new Date(r.created_at).toISOString().split("T")[0],
+          }));
+          setReviews(mappedReviews);
         }
       } catch (error) {
         console.error("Error fetching cafe details:", error);
@@ -62,6 +88,40 @@ const CafeDetail = () => {
     };
     setReviews([newReview, ...reviews]);
     setNewComment("");
+  };
+
+  const handleSubmitReview = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/reviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cafe_id: id,
+          rating: reviewRating,
+          comment: reviewComment,
+          guest_name: "Guest User",
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const newReview = {
+          id: data.data.id,
+          user: data.data.guest_name || "Guest User",
+          rating: data.data.rating,
+          comment: data.data.comment,
+          date: new Date(data.data.created_at).toISOString().split("T")[0],
+        };
+        setReviews([newReview, ...reviews]);
+        setIsReviewModalOpen(false);
+        setReviewComment("");
+        setReviewRating(5);
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    }
   };
 
   if (loading) return <div className="p-8 text-center">読み込み中...</div>;
@@ -290,28 +350,63 @@ const CafeDetail = () => {
 
           {/* Reviews */}
           <section className="bg-white p-6 rounded-lg shadow-sm border">
-            <h2 className="text-xl font-bold mb-4">レビュー</h2>
-            
-            {/* Add Comment */}
-            <div className="mb-6 bg-gray-50 p-4 rounded-lg">
-              <div className="flex gap-4">
-                <Avatar>
-                  <AvatarFallback>ME</AvatarFallback>
-                </Avatar>
-                <div className="flex-1 space-y-3">
-                  <Textarea 
-                    placeholder="このカフェの感想をシェアしましょう..." 
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    className="bg-white"
-                  />
-                  <div className="flex justify-end">
-                    <Button onClick={handleAddComment} className="text-white">レビューを投稿</Button>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">レビュー</h2>
+              <Dialog open={isReviewModalOpen} onOpenChange={setIsReviewModalOpen}>
+                <DialogTrigger asChild>
+                  <Button className="text-white">レビューを投稿</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>レビューを投稿</DialogTitle>
+                    <DialogDescription>
+                      投稿内容は他のユーザーと共有されます。
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="cafe-name">店舗名</Label>
+                      <Input id="cafe-name" value={cafe.name} disabled />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="rating">評価</Label>
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setReviewRating(star)}
+                            className="focus:outline-none"
+                          >
+                            <Star
+                              className={`w-6 h-6 ${
+                                star <= reviewRating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                              }`}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="comment">コメント</Label>
+                      <Textarea
+                        id="comment"
+                        placeholder="雰囲気が落ち着いていて作業しやすいです。"
+                        value={reviewComment}
+                        onChange={(e) => setReviewComment(e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
-              </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsReviewModalOpen(false)}>
+                      店舗詳細へ戻る
+                    </Button>
+                    <Button onClick={handleSubmitReview} className="text-white">投稿</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
-
+            
             {/* Review List */}
             <div className="space-y-4">
               {reviews.map((review) => (
