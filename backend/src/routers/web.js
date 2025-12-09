@@ -17,8 +17,8 @@ router.delete("/favorites/:cafe_id", FavoriteController.removeFavorite);
 
 
 // Reviews routes
-//router.post('/reviews', ReviewController.store);
-//router.get('/reviews/:cafe_id', ReviewController.index);
+router.post('/reviews', ReviewController.store);
+router.get('/reviews/:cafe_id', ReviewController.index);
 
 
 

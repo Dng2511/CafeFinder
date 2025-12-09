@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../common/database');
 const Cafe = require('./Cafe');
+const User = require('./User');
 
 const Review = sequelize.define('Review', {
   user_id: {
@@ -37,5 +38,10 @@ const Review = sequelize.define('Review', {
   tableName: 'reviews',
   timestamps: false
 });
+
+Cafe.hasMany(Review, { foreignKey: 'cafe_id' });
+Review.belongsTo(Cafe, { foreignKey: 'cafe_id' });
+User.hasMany(Review, { foreignKey: 'user_id' });
+Review.belongsTo(User, { foreignKey: 'user_id' });
 
 module.exports = Review;
