@@ -94,25 +94,25 @@ INSERT INTO cafes (
  'cafe3_main.jpg', FALSE, TRUE, FALSE, 21.004567, 105.847123);
 
 INSERT INTO menu_items (cafe_id, item_name, price, image) VALUES
-(1, 'Espresso', 35000, 'espresso.jpg'),
-(1, 'Latte', 45000, 'latte.jpg'),
-(1, 'Cappuccino', 42000, 'cappuccino.jpg'),
+(1, 'Espresso', 35000, 'https://i.pinimg.com/736x/4c/28/e2/4c28e2420bf38c50120dba0cbaf42e8d.jpg'),
+(1, 'Latte', 45000, 'https://i.pinimg.com/1200x/f8/56/d2/f856d2d30045e34f7a3d7438d81c5141.jpg'),
+(1, 'Cappuccino', 42000, 'https://i.pinimg.com/736x/50/f1/7c/50f17c380525acf16c5ad8df185b1554.jpg'),
 
-(2, 'Black Coffee', 30000, 'blackcoffee.jpg'),
-(2, 'Matcha Latte', 50000, 'matchalatte.jpg'),
+(2, 'Black Coffee', 30000, 'https://i.pinimg.com/736x/4c/28/e2/4c28e2420bf38c50120dba0cbaf42e8d.jpg'),
+(2, 'Matcha Latte', 50000, 'https://i.pinimg.com/736x/dc/c9/ce/dcc9cece545e7f612d6ad61fd4f3f552.jpg'),
 
-(3, 'Cold Brew', 55000, 'coldbrew.jpg'),
-(3, 'Mocha', 48000, 'mocha.jpg');
+(3, 'Cold Brew', 55000, 'https://i.pinimg.com/1200x/a0/8b/61/a08b618b6bbe45c5f3ae62ffdaff1d7d.jpg'),
+(3, 'Mocha', 48000, 'https://i.pinimg.com/1200x/b1/8d/50/b18d50fa62686644792732a3f609275f.jpg');
 
 INSERT INTO cafe_images (cafe_id, image_url) VALUES
-(1, 'cafe1_1.jpg'),
-(1, 'cafe1_2.jpg'),
+(1, 'https://i.pinimg.com/1200x/b1/8d/50/b18d50fa62686644792732a3f609275f.jpg'),
+(1, 'https://i.pinimg.com/1200x/03/59/aa/0359aa1f9990e45c11ae02872a792d38.jpg'),
 
-(2, 'cafe2_1.jpg'),
-(2, 'cafe2_2.jpg'),
+(2, 'https://i.pinimg.com/736x/14/e8/88/14e888f9e74d4ee6b048235cf875122d.jpg'),
+(2, 'https://i.pinimg.com/1200x/eb/ef/1e/ebef1ed385c2fe375e9fae8778bf653f.jpg'),
 
-(3, 'cafe3_1.jpg'),
-(3, 'cafe3_2.jpg');
+(3, 'https://i.pinimg.com/1200x/e5/b3/aa/e5b3aa7807de6cdcc30011ae4f1f6de9.jpg'),
+(3, 'https://i.pinimg.com/736x/fc/2d/57/fc2d57aadacdc92eb14e4869fc516109.jpg');
 
 INSERT INTO reviews (user_id, cafe_id, rating, comment) VALUES
 (1, 1, 5, 'Không gian tuyệt vời, nhân viên thân thiện!'),
