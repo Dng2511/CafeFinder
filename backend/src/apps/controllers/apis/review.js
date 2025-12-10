@@ -43,7 +43,7 @@ exports.index = async (req, res) => {
         }
         const reviews = await Review.findAll({
             where: { cafe_id: cafe_id },
-            attributes: ["id", "rating", "comment", "created_at", "guest_name"],
+            attributes: ["id", "rating", "comment", "created_at"],
             include: [
                 {
                     model: User,
