@@ -18,11 +18,13 @@ exports.store = async (req, res) => {
 
         const review = await Review.create({
             user_id: user_id || null,
-            guest_name: guest_name || "Guest",
             cafe_id,
             rating,
             comment
         });
+
+        console.log(review);
+        
 
         return res.status(201).json({
             code: 201,

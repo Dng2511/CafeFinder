@@ -113,6 +113,7 @@ const CafeDetail = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          user_id: 2,
           cafe_id: id,
           rating: reviewRating,
           comment: reviewComment,
@@ -121,13 +122,16 @@ const CafeDetail = () => {
       });
 
       if (response.ok) {
+        
+        
         const data = await response.json();
+        console.log(data);
         const newReview = {
           id: data.data.id,
-          user: data.data.guest_name || "Guest User",
+          user: "Guest User",
           rating: data.data.rating,
           comment: data.data.comment,
-          date: new Date(data.data.created_at).toISOString().split("T")[0],
+          date: new Date().toISOString().split("T")[0],
         };
         setReviews([newReview, ...reviews]);
         setIsReviewModalOpen(false);
