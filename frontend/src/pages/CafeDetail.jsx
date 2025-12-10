@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { addFavorite } from "@/services/Api";
 
 const CafeDetail = () => {
   const { id } = useParams();
@@ -90,6 +91,20 @@ const CafeDetail = () => {
     setNewComment("");
   };
 
+  const handleFavorite = () => {
+    // お気に入り追加のロジックをここに実装
+    console.log(`Cafe ${id} added to favorites`);
+    const userId = 2; 
+    addFavorite({ user_id: userId, cafe_id: id })
+      .then((response) => {
+        console.log("Added to favorites:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error adding to favorites:", error);
+      });
+
+  }
+
   const handleSubmitReview = async () => {
     try {
       const response = await fetch("http://localhost:3000/reviews", {
@@ -152,7 +167,7 @@ const CafeDetail = () => {
         </div>
         
         <div className="flex gap-2">
-          <Button className="gap-2 rounded-full px-6 text-white">
+          <Button className="gap-2 rounded-full px-6 text-white" onClick={() => handleFavorite()}>
             お気に入りに追加
           </Button>
           <Button variant="outline" className="gap-2 rounded-full">

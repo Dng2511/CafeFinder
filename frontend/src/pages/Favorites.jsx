@@ -12,7 +12,7 @@ const Favorites = () => {
   const [sortOrder, setSortOrder] = useState("新しい順");
 
   // Mock user_id - trong thực tế lấy từ authentication
-  const userId = 1;
+  const userId = 2;
 
   useEffect(() => {
     fetchFavorites();
