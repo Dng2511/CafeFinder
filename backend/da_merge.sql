@@ -85,7 +85,7 @@ INSERT INTO cafes (
     has_wifi, has_parking, has_air_conditioning, lat, lon
 ) VALUES
 ('Coffee Haven', '123 Sunset Street, District 1', '0901234567', '07:00', '22:00',
- 'cafe1_main.jpg', TRUE, TRUE, FALSE, 21.013570, 105.856342),
+ 'https://i.pinimg.com/736x/3c/5c/d0/3c5cd030ef98a266a47d8e0b1613498a.jpg', TRUE, TRUE, FALSE, 21.013570, 105.856342),
 
 ('Moonlight Cafe', '45 River Road, District 3', '0912345678', '08:00', '21:00',
  'cafe2_main.jpg', TRUE, FALSE, FALSE, 21.011407, 105.855590),
