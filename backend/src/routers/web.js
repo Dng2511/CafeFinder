@@ -5,6 +5,7 @@ const FavoriteController = require("../apps/controllers/apis/favorite");
 const UserController = require("../apps/controllers/apis/user");
 const verifyToken = require("../apps/middlewares/verifyToken");
 const checkLoggedIn = require("../apps/middlewares/checkLoggedIn");
+const upload = require("../apps/middlewares/upload");
 const {
   checkRole,
   isAdmin,
@@ -47,10 +48,31 @@ router.get("/reviews/:cafe_id", ReviewController.index);
 // Cần đăng nhập để đánh giá (User/Customer)
 router.post("/reviews", verifyToken, ReviewController.store);
 
+// ==================== CAFE REQUEST ROUTES ====================
+router.post(
+  "/requests", 
+  verifyToken, 
+  upload.array("images", 5), 
+  CafeController.createRequest
+);
 // ==================== ADMIN ROUTES ====================
 // Ví dụ routes chỉ dành cho Admin (quản lý quán)
 // router.post('/admin/cafes', verifyToken, isAdmin, CafeController.create);
 // router.put('/admin/cafes/:id', verifyToken, isAdmin, CafeController.update);
 // router.delete('/admin/cafes/:id', verifyToken, isAdmin, CafeController.delete);
+
+router.get(
+    "/admin/requests",
+    verifyToken,
+    isAdmin,
+    CafeController.listRequests
+);
+
+router.post(
+    "/admin/requests/:id",
+    verifyToken,
+    isAdmin,
+    CafeController.processRequest
+);
 
 module.exports = router;

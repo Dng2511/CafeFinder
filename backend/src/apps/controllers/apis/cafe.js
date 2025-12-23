@@ -10,7 +10,9 @@ exports.index = async (req, res) => {
   try {
     let returnedCafes = [];
     if (!req.query.search) {
-      const cafes = await Cafe.findAll();
+      const cafes = await Cafe.findAll({
+        where: { status: 'active' },
+      });
       returnedCafes = cafes.map(cafe => cafe.toJSON());
     } else {
       const keyword = (req.query.search || "").toLowerCase();
@@ -144,5 +146,82 @@ exports.searchById = async (req, res) => {
       message: "Internal server error",
       data: null,
     });
+  }
+};
+
+exports.createRequest = async (req, res) => {
+  try {
+    const { name, address, phone_number, open_time, close_time, lat, lon } = req.body;
+    const owner_id = req.user.id;
+    if (!name || !address) {
+      return res.status(400).json({ status: "error", message: "Tên quán và địa chỉ là bắt buộc" });
+    }
+    let mainImage = null;
+    const files = req.files || (req.file ? [req.file] : []); 
+    
+    if (files.length > 0) {
+      mainImage = '/uploads/' + files[0].filename; 
+    }
+
+    const parseBool = (value) => value === 'true' || value === true;
+    const newCafe = await Cafe.create({
+      name,
+      address,
+      phone_number,
+      open_time,
+      close_time,
+      main_image: mainImage,
+      has_wifi: parseBool(req.body.has_wifi),
+      has_parking: parseBool(req.body.has_parking),
+      has_air_conditioning: parseBool(req.body.has_air_conditioning),
+      has_power_outlet: parseBool(req.body.has_power_outlet),
+      is_quiet: parseBool(req.body.is_quiet),
+      no_smoking: parseBool(req.body.no_smoking),
+      lat: parseFloat(lat),
+      lon: parseFloat(lon),
+      owner_id,
+      status: 'pending',
+    });
+    return res.status(201).json({
+      status: "success",
+      message: "Yêu cầu thêm quán đã được gửi thành công và đang chờ phê duyệt",
+      data: newCafe,
+    });
+  } catch (error) {
+    console.error("Error in createRequest:", error);
+    return res.status(500).json({ status: "error", message: error.message });
+  }
+};
+
+exports.listRequests = async (req, res) => {
+  try {
+    const { status } = req.query;
+    const whereClause = { status: status || 'pending' };
+
+    const cafes = await Cafe.findAll({
+      where: whereClause,
+      order: [['createdAt', 'DESC']]
+    });
+
+    return res.json({ status: "success", data: cafes });
+  } catch (error) {
+    return res.status(500).json({ status: "error", message: error.message });
+  }
+};
+
+exports.processRequest = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { action } = req.body;
+    const cafe = await Cafe.findByPk(id);
+    if (!cafe) return res.status(404).json({ message: "Not found" });
+
+    if (action === 'approve') cafe.status = 'active';
+    else if (action === 'reject') cafe.status = 'rejected';
+    
+    await cafe.save();
+    return res.json({ status: "success", message: `Đã ${action}`, data: cafe });
+  } catch (error) {
+    return res.status(500).json({ status: "error", message: error.message });
   }
 };
