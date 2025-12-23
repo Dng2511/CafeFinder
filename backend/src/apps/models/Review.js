@@ -1,15 +1,12 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../common/database');
+const Sequelize = require('sequelize');
 const Cafe = require('./Cafe');
 const User = require('./User');
 
 const Review = sequelize.define('Review', {
   user_id: {
     type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  guest_name: {
-    type: DataTypes.STRING,
     allowNull: true
   },
   cafe_id: {
@@ -36,7 +33,7 @@ const Review = sequelize.define('Review', {
   },
   created_at: {
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
   }
 }, {
   tableName: 'reviews',

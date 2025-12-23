@@ -1,5 +1,6 @@
 const sequelize = require("../../../common/database")
 const Cafe = require("../../models/Cafe");
+const { addHours } = require("../../../common/time");
 const MenuItem = require("../../models/MenuItem");
 const CafeImage = require("../../models/CafeImage");
 const openai = require("../../../libs/openai");
@@ -57,6 +58,16 @@ exports.index = async (req, res) => {
       }
       returnedCafes = findByDistance.findNearbyCafes(returnedCafes, parseFloat(lat), parseFloat(lon), parseFloat(req.query.distance));
     }
+
+    // Apply +14 hours to any timestamp fields
+    returnedCafes = returnedCafes.map(c => {
+      if (c.created_at) c.created_at = addHours(c.created_at, 14);
+      if (c.updated_at) c.updated_at = addHours(c.updated_at, 14);
+      if (c.createdAt) c.createdAt = addHours(c.createdAt, 14);
+      if (c.updatedAt) c.updatedAt = addHours(c.updatedAt, 14);
+      return c;
+    });
+
     return res.json({
         status: "success",
         message: "Search completed successfully",
@@ -122,8 +133,8 @@ exports.searchById = async (req, res) => {
           main_image: cafe.main_image,
           additional_images: cafeImages,
         },
-        created_at: cafe.createdAt,
-        updated_at: cafe.updatedAt,
+        created_at: addHours(cafe.createdAt, 14),
+        updated_at: addHours(cafe.updatedAt, 14),
       },
     });
   } catch (error) {

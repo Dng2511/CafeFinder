@@ -10,19 +10,32 @@ const Favorites = () => {
   const [loading, setLoading] = useState(true);
   const [filterRating, setFilterRating] = useState("指定なし");
   const [sortOrder, setSortOrder] = useState("新しい順");
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  useEffect(() => {
+    if (searchKeyword.trim() === "") {
+      fetchFavorites();
+    } else {
+
+      const filtered = favorites.filter((cafe) =>
+        cafe.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        (cafe.tags && cafe.tags.toLowerCase().includes(searchKeyword.toLowerCase()))
+      );
+      setFavorites(filtered);
+    }
+  }, [searchKeyword]);
 
   // Mock user_id - trong thực tế lấy từ authentication
   const userId = 1;
 
-  useEffect(() => {
-    fetchFavorites();
-  }, []);
+
 
   const fetchFavorites = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3000/favorites/${userId}`);
+      const response = await fetch(`http://localhost:3000/favorites`);
       const data = await response.json();
+      console.log("Fetched favorites:", data);
 
       if (data.status === "success") {
         // Transform data from API
@@ -129,6 +142,8 @@ const Favorites = () => {
               type="text"
               placeholder="店舗名・タグなどで検索"
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
             />
           </div>
           <div className="w-full sm:w-40">
