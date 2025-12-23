@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const UserModel = require("../../models/User");
+const pagination = require("../../../libs/Pagination");
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
@@ -12,75 +13,30 @@ exports.register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Validate input
-    if (!username || !email || !password) {
-      return res.status(400).json({
-        status: "error",
-        message: "Username, email và password là bắt buộc",
-      });
+    const existing = await UserModel.findOne({ where: { email, role } });
+    if (existing) {
+        return res.status(400).json({ status: "error", message: "Email already exists" });
     }
-
-    // Kiểm tra email đã tồn tại
-    const existingEmail = await User.findOne({ where: { email } });
-    if (existingEmail) {
-      return res.status(400).json({
-        status: "error",
-        message: "Email đã được sử dụng",
-      });
-    }
-
-    // Kiểm tra username đã tồn tại
-    const existingUsername = await User.findOne({ where: { username } });
-    if (existingUsername) {
-      return res.status(400).json({
-        status: "error",
-        message: "Username đã được sử dụng",
-      });
-    }
-
-    // Hash password
-    const password_hash = await bcrypt.hash(password, 10);
-
-    // Tạo user mới (mặc định role là customer)
-    const user = await User.create({
-      username,
-      email,
-      password_hash,
-      role: "customer",
+    const hashed = await bcrypt.hash(password, 10);
+    const user = await UserModel.create({
+        username,
+        email,
+        password_hash: hashed,
+        role
     });
-
-    // Tạo JWT token
-    const token = jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
-      JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    // Trả về response (không bao gồm password_hash)
-    const userResponse = {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-    };
-
-    res.status(201).json({
-      status: "success",
-      message: "Đăng ký thành công",
-      data: { user: userResponse, token },
+    const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: "1d" });
+    res.json({
+        status: "success",
+        data: {
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                role: user.role
+            },
+            token
+        }
     });
-  } catch (error) {
-    console.error("Register error:", error);
-    res.status(500).json({
-      status: "error",
-      message: "Lỗi server khi đăng ký",
-    });
-  }
 };
 
 /**
@@ -90,25 +46,14 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Validate input
-    if (!email || !password) {
-      return res.status(400).json({
-        status: "error",
-        message: "Email và password là bắt buộc",
-      });
-    }
-
-    // Tìm user theo email
-    const user = await User.findOne({ where: { email } });
+    const role = req.params.role || "customer";
+    const user = await UserModel.findOne({ where: { email, role } });
     if (!user) {
       return res.status(401).json({
         status: "error",
         message: "Email hoặc mật khẩu không đúng",
       });
     }
-
-    // Kiểm tra password
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
       return res.status(401).json({
@@ -116,6 +61,20 @@ exports.login = async (req, res) => {
         message: "Email hoặc mật khẩu không đúng",
       });
     }
+    const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: "30d" });
+    res.json({
+        status: "success",
+        data: {
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                role: user.role
+            },
+            token
+        }
+    });
+}
 
     // Tạo JWT token
     const token = jwt.sign(
