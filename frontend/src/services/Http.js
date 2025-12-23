@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const Http = axios.create({
+const Http = axios.create({
     baseURL: 'http://localhost:3000',
 });
 
@@ -31,3 +31,5 @@ Http.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+export { Http };
+export default Http;

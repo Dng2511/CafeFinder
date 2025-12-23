@@ -8,39 +8,51 @@ import Favorites from "./pages/Favorites";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
+import CreateCafe from "./pages/CreateCafe";
 
 function App() {
   return (
     <Router>
       <AuthProvider>
         <Routes>
-          {/* Auth Routes */}
+          {/* === AUTH ROUTES (Không có Layout Header/Footer) === */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Protected Admin Routes */}
-          <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute requiredRole="admin">
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Public Routes with Layout */}
+          {/* === MAIN ROUTES (Có Layout Header/Footer) === */}
           <Route
             path="/*"
             element={
               <Layout>
                 <Routes>
+                  {/* Public Routes - Ai cũng xem được */}
                   <Route path="/" element={<Home />} />
                   <Route path="/cafes/:id" element={<CafeDetail />} />
+
+                  {/* User Protected Routes - Cần đăng nhập */}
                   <Route
                     path="/favorites"
                     element={
                       <ProtectedRoute>
                         <Favorites />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/create-cafe"
+                    element={
+                      <ProtectedRoute>
+                        <CreateCafe />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Admin Protected Routes - Chỉ Admin vào (Logic check role nằm trong Header hoặc ProtectedRoute) */}
+                  <Route
+                    path="/admin/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <AdminDashboard />
                       </ProtectedRoute>
                     }
                   />

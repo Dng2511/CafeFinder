@@ -1,38 +1,29 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { Search, Heart, Coffee, LogOut, User, PlusCircle, LayoutDashboard } from 'lucide-react';
 
 const Header = () => {
-  const { isAuthenticated, user, logout, isAdmin } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
+
+  const isAdmin = user?.role === 'admin';
 
   const handleLogout = () => {
     logout();
     setShowMenu(false);
-    navigate("/");
+    navigate("/login");
   };
 
   return (
-    <header className="bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg">
+    <header className="bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          {/* Logo and Title */}
-          <Link to="/" className="flex items-center space-x-3">
-            <div className="bg-white p-2 rounded-lg shadow-md">
-              <svg
-                className="w-8 h-8 text-cyan-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                />
-              </svg>
+          
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="bg-white p-2 rounded-lg shadow-md group-hover:bg-cyan-50 transition-colors">
+              <Coffee className="w-8 h-8 text-cyan-600" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">CafeFinder</h1>
@@ -42,70 +33,82 @@ const Header = () => {
             </div>
           </Link>
 
-          {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link
-              to="/"
-              className="text-white hover:text-cyan-100 transition-colors font-medium"
-            >
-              ホーム
-            </Link>
-            <Link
-              to="/"
-              className="text-white hover:text-cyan-100 transition-colors font-medium"
-            >
-              検索
-            </Link>
-            {isAuthenticated && (
-              <Link
-                to="/favorites"
-                className="text-white hover:text-cyan-100 transition-colors font-medium"
-              >
-                お気に入り
-              </Link>
+            
+            {isAdmin ? (
+              <>
+                <Link
+                  to="/"
+                  className="flex items-center gap-1 text-white hover:text-cyan-100 transition-colors font-medium"
+                >
+                  <Search className="w-4 h-4" />
+                  <span>ホーム </span>
+                </Link>
+                <Link
+                  to="/admin/dashboard"
+                  className="flex items-center gap-1 text-white hover:text-cyan-100 transition-colors font-medium"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span>承認 </span>
+                </Link>
+              </>
+            ) : (
+              
+              <>
+                <Link
+                  to="/"
+                  className="flex items-center gap-1 text-white hover:text-cyan-100 transition-colors font-medium"
+                >
+                  <Search className="w-4 h-4" />
+                  <span>検索</span>
+                </Link>
+                
+                {isAuthenticated && (
+                  <>
+                    <Link
+                      to="/favorites"
+                      className="flex items-center gap-1 text-white hover:text-cyan-100 transition-colors font-medium"
+                    >
+                      <Heart className="w-4 h-4" />
+                      <span>お気に入り</span>
+                    </Link>
+                    <Link
+                      to="/create-cafe"
+                      className="flex items-center gap-1 text-white hover:text-cyan-100 transition-colors font-medium"
+                    >
+                      <PlusCircle className="w-4 h-4" />
+                      <span>カフェ作り</span>
+                    </Link>
+                  </>
+                )}
+              </>
             )}
-            {isAdmin && (
-              <Link
-                to="/admin/dashboard"
-                className="text-white hover:text-cyan-100 transition-colors font-medium"
-              >
-                ダッシュボード
-              </Link>
-            )}
+          </nav>
 
-            {/* Auth Buttons / User Menu */}
+          <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
               <div className="relative">
                 <button
                   onClick={() => setShowMenu(!showMenu)}
                   className="flex items-center space-x-2 bg-white text-cyan-600 px-4 py-2 rounded-lg font-semibold hover:bg-cyan-50 transition-colors shadow-md"
                 >
-                  <svg
-                    className="w-4 h-4"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <User className="w-4 h-4" />
                   <span>{user?.username}</span>
                 </button>
 
                 {showMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-10">
-                    <div className="p-4 border-b">
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl z-10 overflow-hidden border border-gray-100">
+                    <div className="p-4 border-b bg-gray-50">
                       <p className="text-sm text-gray-600">
-                        ロール: <span className="font-semibold">{user?.role}</span>
+                        ロール: <span className="font-bold text-cyan-600 uppercase">{user?.role}</span>
                       </p>
                     </div>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
+                      className="w-full text-left px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-2"
                     >
-                      ログアウト
+                      <LogOut className="w-4 h-4" />
+                      <span>ログアウト</span>
                     </button>
                   </div>
                 )}
@@ -120,29 +123,16 @@ const Header = () => {
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-cyan-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-cyan-700 transition-colors shadow-md"
+                  className="bg-cyan-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-cyan-800 transition-colors shadow-md border border-cyan-600"
                 >
                   登録
                 </Link>
               </div>
             )}
-          </nav>
+          </div>
 
-          {/* Mobile Menu Button */}
-          <button className="md:hidden text-white">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
+          <button className="md:hidden text-white p-1">
+             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
         </div>
       </div>
