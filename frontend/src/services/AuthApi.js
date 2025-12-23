@@ -2,8 +2,10 @@ import { Http } from "./Http";
 
 export const register = (data) => Http.post("/register", data);
 
-export const login = (email, password, role = "customer") =>
-  Http.post(`/login/${role}`, { email, password });
+export const login = (email, password) =>
+  Http.post("/login", { email, password });
+
+export const getMe = () => Http.get("/me");
 
 export const setAuthToken = (token) => {
   if (token) {
@@ -12,4 +14,3 @@ export const setAuthToken = (token) => {
     delete Http.defaults.headers.common["Authorization"];
   }
 };
-
