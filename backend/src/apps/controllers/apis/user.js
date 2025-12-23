@@ -5,7 +5,7 @@ const pagination = require("../../../libs/Pagination");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.register = async (req, res) => {
-    const { name, email, password, phone } = req.body;
+    const { username, email, password} = req.body;
     const role = "customer";
 
     const existing = await UserModel.findOne({ email, role });
@@ -13,9 +13,9 @@ exports.register = async (req, res) => {
         return res.status(400).json({ status: "error", message: "Email already exists" });
     }
     const hashed = await bcrypt.hash(password, 10);
-    const user = new UserModel({ name, email, password: hashed, phone, role });
+    const user = new UserModel({ username, email, password: hashed, role });
     await user.save();
-    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: "1d" });
+    const token = jwt.sign({ id: user._id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: "1d" });
     res.json({ status: "success", data: { user, token } });
 };
 
