@@ -1,7 +1,18 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const Header = () => {
+  const { isAuthenticated, user, logout, isAdmin } = useAuth();
+  const navigate = useNavigate();
+  const [showMenu, setShowMenu] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    setShowMenu(false);
+    navigate("/");
+  };
+
   return (
     <header className="bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,15 +56,76 @@ const Header = () => {
             >
               検索
             </Link>
-            <Link
-              to="/favorites"
-              className="text-white hover:text-cyan-100 transition-colors font-medium"
-            >
-              お気に入り
-            </Link>
-            <button className="bg-white text-cyan-600 px-4 py-2 rounded-lg font-semibold hover:bg-cyan-50 transition-colors shadow-md">
-              ログイン
-            </button>
+            {isAuthenticated && (
+              <Link
+                to="/favorites"
+                className="text-white hover:text-cyan-100 transition-colors font-medium"
+              >
+                お気に入り
+              </Link>
+            )}
+            {isAdmin && (
+              <Link
+                to="/admin/dashboard"
+                className="text-white hover:text-cyan-100 transition-colors font-medium"
+              >
+                ダッシュボード
+              </Link>
+            )}
+
+            {/* Auth Buttons / User Menu */}
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowMenu(!showMenu)}
+                  className="flex items-center space-x-2 bg-white text-cyan-600 px-4 py-2 rounded-lg font-semibold hover:bg-cyan-50 transition-colors shadow-md"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span>{user?.username}</span>
+                </button>
+
+                {showMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-10">
+                    <div className="p-4 border-b">
+                      <p className="text-sm text-gray-600">
+                        ロール: <span className="font-semibold">{user?.role}</span>
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      ログアウト
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex space-x-2">
+                <Link
+                  to="/login"
+                  className="bg-white text-cyan-600 px-4 py-2 rounded-lg font-semibold hover:bg-cyan-50 transition-colors shadow-md"
+                >
+                  ログイン
+                </Link>
+                <Link
+                  to="/register"
+                  className="bg-cyan-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-cyan-700 transition-colors shadow-md"
+                >
+                  登録
+                </Link>
+              </div>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
