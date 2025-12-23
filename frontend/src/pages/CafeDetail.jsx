@@ -76,20 +76,6 @@ const CafeDetail = () => {
 
     fetchCafeDetail();
   }, [id]);
-
-  const handleAddComment = () => {
-    if (!newComment.trim()) return;
-    const newReview = {
-      id: reviews.length + 1,
-      user: "Guest User",
-      rating: 5, // Default rating for now
-      comment: newComment,
-      date: new Date().toISOString().split("T")[0],
-    };
-    setReviews([newReview, ...reviews]);
-    setNewComment("");
-  };
-
   const handleSubmitReview = async () => {
     try {
       const response = await fetch("http://localhost:3000/reviews", {
