@@ -64,7 +64,7 @@ const CafeDetail = () => {
             user: r.user ? r.user.username : (r.guest_name || "Guest"),
             rating: r.rating,
             comment: r.comment,
-            date: new Date(r.created_at).toISOString().split("T")[0],
+            date: new Date(r.created_at).toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }),
           }));
           setReviews(mappedReviews);
         }
@@ -85,7 +85,7 @@ const CafeDetail = () => {
       user: "Guest User",
       rating: 5, // Default rating for now
       comment: newComment,
-      date: new Date().toISOString().split("T")[0],
+      date: new Date().toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }),
     };
     setReviews([newReview, ...reviews]);
     setNewComment("");
@@ -131,7 +131,7 @@ const CafeDetail = () => {
           user: "Guest User",
           rating: data.data.rating,
           comment: data.data.comment,
-          date: new Date().toISOString().split("T")[0],
+          date: new Date().toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }),
         };
         setReviews([newReview, ...reviews]);
         setIsReviewModalOpen(false);

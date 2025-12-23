@@ -1,5 +1,6 @@
 const Review = require("../../models/Review");
 const User = require("../../models/User");
+const { addHours } = require("../../../common/time");
 
 exports.store = async (req, res) => {
     try {
@@ -25,11 +26,13 @@ exports.store = async (req, res) => {
 
         console.log(review);
         
+        const result = review.toJSON ? review.toJSON() : review;
+        result.created_at = addHours(result.created_at, 7);
 
         return res.status(201).json({
             code: 201,
             message: "Review submitted successfully",
-            data: review
+            data: result
         });
     } catch (error) {
         console.error("Error submitting review:", error);
@@ -56,9 +59,15 @@ exports.index = async (req, res) => {
             order: [["created_at", "DESC"]]
         });
 
+        const adjusted = reviews.map(r => {
+            const o = r.toJSON ? r.toJSON() : r;
+            o.created_at = addHours(o.created_at, 7);
+            return o;
+        });
+
         return res.status(200).json({
             code: 200,
-            data: reviews
+            data: adjusted
         });
     } catch (error) {
         console.error("Error fetching reviews:", error);

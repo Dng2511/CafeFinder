@@ -1,5 +1,6 @@
 const Favorite = require("../../models/Favorite");
 const Cafe = require("../../models/Cafe");
+const { addHours } = require("../../../common/time");
 
 
 // Mock data for demo purposes
@@ -120,7 +121,7 @@ exports.addFavorite = async (req, res) => {
         id: favorite.id,
         user_id: favorite.user_id,
         cafe_id: favorite.cafe_id,
-        created_at: favorite.created_at,
+        created_at: addHours(favorite.created_at, 14),
       },
     });
   } catch (error) {
@@ -213,36 +214,9 @@ exports.removeFavorite = async (req, res) => {
  */
 exports.getFavorites = async (req, res) => {
   try {
-    const { user_id } = req.params;
-
-    // Validate input
-    if (!user_id || isNaN(user_id)) {
-      return res.status(400).json({
-        status: "error",
-        message: "Invalid user_id",
-        data: null,
-      });
-    }
-
-    // Return mock data for demo (user_id = 1)
-    if (user_id == 1) {
-      return res.status(200).json({
-        status: "success",
-        message: "Favorites retrieved successfully",
-        count: mockFavorites.length,
-        data: mockFavorites.map((fav) => ({
-          id: fav.id,
-          user_id: fav.user_id,
-          cafe_id: fav.cafe_id,
-          created_at: fav.created_at,
-          cafe: fav.cafe,
-        })),
-      });
-    }
-
     // Get favorites with cafe details from database
     const favorites = await Favorite.findAll({
-      where: { user_id },
+      where: { user_id: 2 },
       include: [
         {
           model: Cafe,
@@ -273,7 +247,7 @@ exports.getFavorites = async (req, res) => {
         id: fav.id,
         user_id: fav.user_id,
         cafe_id: fav.cafe_id,
-        created_at: fav.created_at,
+        created_at: addHours(fav.created_at, 7),
         cafe: fav.Cafe,
       })),
     });
