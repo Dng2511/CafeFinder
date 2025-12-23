@@ -4,7 +4,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="30c888f8-e4d6-43ba-bc7a-429523f0222c" name="Changes" comment="Done edit api" />
+    <list default="true" id="1c478f72-821f-447a-a851-9376a90d4ecb" name="Changes" comment="reolved conflicts">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/CafeFinder.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/apps/middlewares/checkRole.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/ProtectedRoute.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/contexts/AuthContext.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/lib/authUtils.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/lib/validation.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/AdminDashboard.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/Login.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/Register.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/services/AuthApi.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/apps/controllers/apis/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/apps/controllers/apis/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/apps/middlewares/checkLoggedIn.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/apps/middlewares/checkLoggedIn.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/apps/middlewares/verifyToken.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/apps/middlewares/verifyToken.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/routers/web.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routers/web.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/services/Http.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/Http.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -47,7 +72,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "feature/api__cafe__info__edit",
+    "git-widget-placeholder": "Merging feature/api__cafe__info__edit",
     "ignore.virus.scanning.warn.message": "true",
     "javascript.preferred.runtime.type.id": "node",
     "last_opened_file_path": "D:/OneDrive - Hanoi University of Science and Technology/ITSS Japanese 1/CafeFinder/backend",
@@ -167,7 +192,8 @@
     <MESSAGE value="added Favourite" />
     <MESSAGE value="Done login register" />
     <MESSAGE value="Done edit api" />
-    <option name="LAST_COMMIT_MESSAGE" value="Done edit api" />
+    <MESSAGE value="reolved conflicts" />
+    <option name="LAST_COMMIT_MESSAGE" value="reolved conflicts" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
