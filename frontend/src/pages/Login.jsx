@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { login as loginApi, setAuthToken } from '../services/AuthApi';
-import { handlePostLoginRedirect } from '../lib/authUtils';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { login as loginApi, setAuthToken } from "../services/AuthApi";
+import { handlePostLoginRedirect } from "../lib/authUtils";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
 
 const Login = () => {
   const navigate = useNavigate();
   const { login, isAuthenticated, isAdmin } = useAuth();
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [serverError, setServerError] = useState('');
+  const [serverError, setServerError] = useState("");
 
   // Redirect if already logged in
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(isAdmin ? '/admin/dashboard' : '/');
+      navigate(isAdmin ? "/admin/dashboard" : "/");
     }
   }, [isAuthenticated, isAdmin, navigate]);
 
@@ -27,15 +27,15 @@ const Login = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!formData.email) {
-      newErrors.email = 'メールアドレスを入力してください';
+      newErrors.email = "メールアドレスを入力してください";
     } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = '有効なメールアドレスを入力してください';
+      newErrors.email = "有効なメールアドレスを入力してください";
     }
 
     if (!formData.password) {
-      newErrors.password = 'パスワードを入力してください';
+      newErrors.password = "パスワードを入力してください";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'パスワードは6文字以上である必要があります';
+      newErrors.password = "パスワードは6文字以上である必要があります";
     }
 
     setErrors(newErrors);
@@ -44,30 +44,32 @@ const Login = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setServerError('');
+    setServerError("");
 
     if (!validateForm()) return;
 
     setLoading(true);
     try {
-      const response = await loginApi(formData.email, formData.password, 'customer');
+      const response = await loginApi(formData.email, formData.password);
 
-      if (response.status === 200 && response.data.status === 'success') {
+      if (response.data.status === "success") {
         const { user, token } = response.data.data;
         setAuthToken(token);
         login(user, token);
         handlePostLoginRedirect(user, navigate);
       }
     } catch (error) {
-      setServerError(error.response?.data?.message || 'ログインに失敗しました。');
+      setServerError(
+        error.response?.data?.message || "ログインに失敗しました。"
+      );
     } finally {
       setLoading(false);
     }
@@ -88,7 +90,10 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <Label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               メールアドレス
             </Label>
             <Input
@@ -98,7 +103,7 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="you@example.com"
-              className={errors.email ? 'border-red-500' : ''}
+              className={errors.email ? "border-red-500" : ""}
             />
             {errors.email && (
               <p className="mt-1 text-sm text-red-600">{errors.email}</p>
@@ -106,7 +111,10 @@ const Login = () => {
           </div>
 
           <div>
-            <Label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <Label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               パスワード
             </Label>
             <Input
@@ -116,7 +124,7 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="••••••••"
-              className={errors.password ? 'border-red-500' : ''}
+              className={errors.password ? "border-red-500" : ""}
             />
             {errors.password && (
               <p className="mt-1 text-sm text-red-600">{errors.password}</p>
@@ -128,13 +136,16 @@ const Login = () => {
             disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-md transition-colors"
           >
-            {loading ? 'ログイン中...' : 'ログイン'}
+            {loading ? "ログイン中..." : "ログイン"}
           </Button>
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-600">
-          アカウントがありませんか？{' '}
-          <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
+          アカウントがありませんか？{" "}
+          <Link
+            to="/register"
+            className="text-blue-600 hover:text-blue-700 font-medium"
+          >
             登録する
           </Link>
         </p>
@@ -144,4 +155,3 @@ const Login = () => {
 };
 
 export default Login;
-
