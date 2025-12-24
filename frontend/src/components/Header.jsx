@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { Search, Heart, Coffee, LogOut, User, PlusCircle, LayoutDashboard } from 'lucide-react';
+import { Search, Heart, Coffee, LogOut, User, PlusCircle, LayoutDashboard, Store } from 'lucide-react';
 
 const Header = () => {
   const { isAuthenticated, user, logout } = useAuth();
@@ -78,6 +78,13 @@ const Header = () => {
                     >
                       <PlusCircle className="w-4 h-4" />
                       <span>カフェ作り</span>
+                    </Link>
+                    <Link
+                      to="/my-cafes"
+                      className="flex items-center gap-1 text-white hover:text-cyan-100 transition-colors font-medium"
+                    >
+                      <Store className="w-4 h-4" />
+                      <span>私のカフェ</span>
                     </Link>
                   </>
                 )}

@@ -9,6 +9,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
 import CreateCafe from "./pages/CreateCafe";
+import MyCafes from "./pages/MyCafes";
+import EditCafe from "./pages/EditCafe";
 
 function App() {
   return (
@@ -43,6 +45,23 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <CreateCafe />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/my-cafes"
+                    element={
+                      <ProtectedRoute>
+                        <MyCafes />
+                      </ProtectedRoute>
+                    }
+                  />
+                  {/* Route sửa quán, cần ID */}
+                  <Route
+                    path="/edit-cafe/:id"
+                    element={
+                      <ProtectedRoute>
+                        <EditCafe />
                       </ProtectedRoute>
                     }
                   />
