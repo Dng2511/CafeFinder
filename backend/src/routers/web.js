@@ -10,6 +10,8 @@ const {
   isAdmin,
   isCustomer,
 } = require("../apps/middlewares/checkRole");
+const verifyToken = require('../apps/middlewares/verifyToken');
+const upload = require('../apps/middlewares/upload');
 
 const router = express.Router();
 
@@ -29,6 +31,7 @@ router.get("/cafes", CafeController.index);
 
 // Public: Xem chi tiết quán cafe
 router.get("/cafes/:id", CafeController.searchById);
+router.post("/cafes/:id/edit-requests", verifyToken, upload.single('main_image'), CafeController.createEditRequest);
 
 // ==================== FAVORITE ROUTES ====================
 // Cần đăng nhập để sử dụng
