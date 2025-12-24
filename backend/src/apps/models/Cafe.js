@@ -1,4 +1,4 @@
-//kết nối với database
+// src/apps/models/Cafe.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../common/database');
 
@@ -18,10 +18,13 @@ const Cafe = sequelize.define('Cafe', {
   is_quiet: { type: DataTypes.BOOLEAN, defaultValue: false },
   no_smoking: { type: DataTypes.BOOLEAN, defaultValue: false },
   lat: { type: DataTypes.FLOAT },
-  lon: { type: DataTypes.FLOAT }
+  lon: { type: DataTypes.FLOAT },
+  
+  status: { type: DataTypes.ENUM('pending', 'active', 'rejected'), defaultValue: 'pending' },
+  owner_id: { type: DataTypes.INTEGER, allowNull: true}
 }, {
   tableName: 'cafes',
-  timestamps: false
+  timestamps: true,
 });
 
 module.exports = Cafe;

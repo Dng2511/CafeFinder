@@ -4,6 +4,8 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import SearchBar from "../components/SearchBar";
 import CafeCard from "../components/CafeCard";
+import { Link } from 'react-router-dom';
+import {Button} from '@/components/ui/button';
 
 function Home() {
   const [cafes, setCafes] = useState([]);

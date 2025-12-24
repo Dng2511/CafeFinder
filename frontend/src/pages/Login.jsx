@@ -52,7 +52,9 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setServerError("");
+    setErrors({});
 
     if (!validateForm()) return;
 
@@ -76,6 +78,7 @@ const Login = () => {
   };
 
   return (
+    
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
@@ -88,7 +91,7 @@ const Login = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form className="space-y-4">
           <div>
             <Label
               htmlFor="email"
@@ -132,7 +135,7 @@ const Login = () => {
           </div>
 
           <Button
-            type="submit"
+            onClick={handleSubmit}
             disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-md transition-colors"
           >

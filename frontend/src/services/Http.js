@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const Http = axios.create({
+const Http = axios.create({
     baseURL: 'http://localhost:3000',
 });
 
@@ -23,6 +23,9 @@ Http.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      if (originalRequest.url.includes('/login')) {
+        return Promise.reject(error);
+      }
       // Token expired or invalid
       localStorage.removeItem('accessToken');
       localStorage.removeItem('user');
@@ -31,3 +34,5 @@ Http.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+export { Http };
+export default Http;

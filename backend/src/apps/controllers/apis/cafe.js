@@ -1,4 +1,4 @@
-const sequelize = require("../../../common/database")
+const sequelize = require("../../../common/database");
 const Cafe = require("../../models/Cafe");
 const { addHours } = require("../../../common/time");
 const MenuItem = require("../../models/MenuItem");
@@ -7,341 +7,195 @@ const EditRequest = require("../../models/EditRequest");
 const openai = require("../../../libs/openai");
 const findByDistance = require("../../../libs/findByDistance");
 
+// === HELPER: Khai báo hàm này ở đầu file để dùng chung ===
+const parseBool = (val) => val === 'true' || val === true;
+
+// 1. Lấy danh sách quán (Public - Chỉ hiện quán Active)
 exports.index = async (req, res) => {
   try {
     let returnedCafes = [];
     if (!req.query.search) {
-      const cafes = await Cafe.findAll();
+      const cafes = await Cafe.findAll({ where: { status: 'active' } });
       returnedCafes = cafes.map(cafe => cafe.toJSON());
     } else {
       const keyword = (req.query.search || "").toLowerCase();
-
-      // Map keyword sang filter boolean
-      /* const filters = {};
-      if (keyword.includes("do-xe") || keyword.includes("parking")) {
-        filters.has_parking = true;
-      }
-      if (keyword.includes("wifi")) {
-        filters.has_wifi = true;
-      }
-      if (keyword.includes("may-lanh") || keyword.includes("air")) {
-        filters.has_air_conditioning = true;
-      } */
-
-      // Query
-      /* const cafes = await Cafe.findAll({
-        where: {
-          ...filters,
-          [Sequelize.Op.or]: Sequelize.literal(`
-          unaccent(lower(name)) ILIKE unaccent(lower('%${keyword}%'))
-          OR
-          similarity(unaccent(lower(name)), unaccent(lower('${keyword}'))) > 0.3
-        `),
-        },
-        order: Sequelize.literal(`
-        similarity(unaccent(lower(name)), unaccent(lower('${keyword}'))) DESC
-      `),
-      }); */
       const sql = await openai.generateCafeSearchSQL(keyword);
-      console.log("Generated SQL:", sql);
+      // console.log("Generated SQL:", sql);
       const cafes = await sequelize.query(sql);
-      returnedCafes = cafes[0];
-      
+      // Lọc lại kết quả search chỉ lấy active
+      returnedCafes = cafes[0].filter(c => c.status === 'active');
     }
+    
     if (req.query.distance){
       const {lat, lon} = req.query;
-      if (!lat || !lon){
-        return res.status(400).json({
-          status: "error",
-          message: "Latitude and longitude are required for distance filtering",
-          data: null,
-        });
-      }
+      if (!lat || !lon) return res.status(400).json({ message: "Missing coordinates" });
       returnedCafes = findByDistance.findNearbyCafes(returnedCafes, parseFloat(lat), parseFloat(lon), parseFloat(req.query.distance));
     }
 
-    // Apply +14 hours to any timestamp fields
+    // Time adjustment
     returnedCafes = returnedCafes.map(c => {
-      if (c.created_at) c.created_at = addHours(c.created_at, 14);
-      if (c.updated_at) c.updated_at = addHours(c.updated_at, 14);
       if (c.createdAt) c.createdAt = addHours(c.createdAt, 14);
       if (c.updatedAt) c.updatedAt = addHours(c.updatedAt, 14);
       return c;
     });
 
-    return res.json({
-        status: "success",
-        message: "Search completed successfully",
-        count: returnedCafes.length,
-        data: returnedCafes,
-      });
+    return res.json({ status: "success", count: returnedCafes.length, data: returnedCafes });
   } catch (error) {
-    return res.status(500).json({
-      status: "error",
-      message: error.message,
-      data: null,
-    });
+    return res.status(500).json({ status: "error", message: error.message });
   }
 };
 
+// 2. Chi tiết quán (Public)
 exports.searchById = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id || isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
 
-    // Validate ID
-    if (!id || isNaN(id)) {
-      return res.status(400).json({
-        status: "error",
-        message: "Invalid cafe ID",
-        data: null,
-      });
-    }
-
-    // Find cafe by ID
     const cafe = await Cafe.findByPk(id);
-
-    if (!cafe) {
-      return res.status(404).json({
-        status: "error",
-        message: "Cafe not found",
-        data: null,
-      });
-    }
+    if (!cafe) return res.status(404).json({ message: "Cafe not found" });
 
     const menuItems = await MenuItem.findAll({ where: { cafe_id: id } });
     const cafeImages = await CafeImage.findAll({ where: { cafe_id: id } });
 
-    // Success response with standardized format
     return res.status(200).json({
       status: "success",
-      message: "Cafe details retrieved successfully",
       data: {
-        id: cafe.id,
-        name: cafe.name,
-        address: cafe.address,
-        phone_number: cafe.phone_number,
-        opening_hours: {
-          open_time: cafe.open_time,
-          close_time: cafe.close_time,
-        },
-        amenities: {
-          has_wifi: cafe.has_wifi,
-          has_parking: cafe.has_parking,
-          has_air_conditioning: cafe.has_air_conditioning,
-        },
+        ...cafe.toJSON(),
         menu: menuItems,
-        images: {
-          main_image: cafe.main_image,
-          additional_images: cafeImages,
-        },
+        images: { main_image: cafe.main_image, additional_images: cafeImages },
         created_at: addHours(cafe.createdAt, 14),
         updated_at: addHours(cafe.updatedAt, 14),
       },
     });
   } catch (error) {
-    console.error("Error in searchById:", error);
-    return res.status(500).json({
-      status: "error",
-      message: "Internal server error",
-      data: null,
-    });
+    return res.status(500).json({ status: "error", message: "Internal server error" });
   }
 };
 
-/**
- * Create a cafe edit request
- * POST /cafes/:id/edit-requests
- * Body: {
- *   name?: string,
- *   address?: string,
- *   phone_number?: string,
- *   open_time?: string,
- *   close_time?: string,
- *   has_wifi?: boolean,
- *   has_parking?: boolean,
- *   has_air_conditioning?: boolean,
- *   has_power_outlet?: boolean,
- *   is_quiet?: boolean,
- *   no_smoking?: boolean,
- *   menu_items?: [{id?, item_name, price, image?}, ...],
- *   cafe_images?: [url1, url2, ...]
- * }
- * File: main_image (optional)
- */
-exports.createEditRequest = async (req, res) => {
+// ==================== USER FUNCTIONS ====================
+
+// 3. User tạo request
+exports.createRequest = async (req, res) => {
+    try {
+        const { name, address, lat, lon } = req.body;
+        const owner_id = req.user.id;
+        
+        if (!name || !address) {
+            return res.status(400).json({ status: "error", message: "Tên quán và địa chỉ là bắt buộc" });
+        }
+
+        let mainImage = null;
+        const files = req.files || (req.file ? [req.file] : []);
+        if (files.length > 0) mainImage = '/uploads/' + files[0].filename;
+
+        const newCafe = await Cafe.create({
+            ...req.body,
+            main_image: mainImage,
+            has_wifi: parseBool(req.body.has_wifi),
+            has_parking: parseBool(req.body.has_parking),
+            has_air_conditioning: parseBool(req.body.has_air_conditioning),
+            has_power_outlet: parseBool(req.body.has_power_outlet),
+            is_quiet: parseBool(req.body.is_quiet),
+            no_smoking: parseBool(req.body.no_smoking),
+            lat: lat ? parseFloat(lat) : null,
+            lon: lon ? parseFloat(lon) : null,
+            owner_id,
+            status: 'pending'
+        });
+        return res.status(201).json({ status: "success", data: newCafe });
+    } catch (error) {
+        console.error("Error:", error);
+        return res.status(500).json({ status: "error", message: error.message });
+    }
+};
+
+// 4. Lấy danh sách quán của tôi (User)
+exports.getMyCafes = async (req, res) => {
+  try {
+    const owner_id = req.user.id;
+    const cafes = await Cafe.findAll({
+      where: { owner_id },
+      order: [['createdAt', 'DESC']]
+    });
+
+    return res.json({ status: "success", data: cafes });
+  } catch (error) {
+    return res.status(500).json({ status: "error", message: error.message });
+  }
+};
+
+// 5. Cập nhật quán (User - Reset về Pending)
+exports.updateCafe = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user?.id;
+    const owner_id = req.user.id;
+    const { name, address, lat, lon } = req.body;
 
-    // Validate cafe ID
-    if (!id || isNaN(id)) {
-      return res.status(400).json({
-        status: "error",
-        message: "Invalid cafe ID",
-        data: null,
-      });
-    }
-
-    // Verify user is logged in
-    if (!userId) {
-      return res.status(401).json({
-        status: "error",
-        message: "User must be logged in to create edit requests",
-        data: null,
-      });
-    }
-
-    // Verify cafe exists
-    const cafe = await Cafe.findByPk(id);
+    const cafe = await Cafe.findOne({ where: { id, owner_id } });
     if (!cafe) {
-      return res.status(404).json({
-        status: "error",
-        message: "Cafe not found",
-        data: null,
-      });
+      return res.status(404).json({ status: "error", message: "Không tìm thấy quán hoặc không có quyền sửa" });
     }
 
-    // Prepare edit data from request body
-    const editData = {};
-    const allowedFields = [
-      'name', 'address', 'phone_number', 'open_time', 'close_time',
-      'has_wifi', 'has_parking', 'has_air_conditioning', 'has_power_outlet',
-      'is_quiet', 'no_smoking', 'menu_items', 'cafe_images'
-    ];
+    let mainImage = cafe.main_image;
+    const files = req.files || (req.file ? [req.file] : []);
+    if (files.length > 0) mainImage = '/uploads/' + files[0].filename;
 
-    // Collect only provided fields
-    allowedFields.forEach(field => {
-      if (req.body[field] !== undefined) {
-        editData[field] = req.body[field];
-      }
+    await cafe.update({
+      name, address, 
+      phone_number: req.body.phone_number,
+      open_time: req.body.open_time,
+      close_time: req.body.close_time,
+      main_image: mainImage,
+      has_wifi: parseBool(req.body.has_wifi),
+      has_parking: parseBool(req.body.has_parking),
+      has_air_conditioning: parseBool(req.body.has_air_conditioning),
+      has_power_outlet: parseBool(req.body.has_power_outlet),
+      is_quiet: parseBool(req.body.is_quiet),
+      no_smoking: parseBool(req.body.no_smoking),
+      lat: lat ? parseFloat(lat) : cafe.lat,
+      lon: lon ? parseFloat(lon) : cafe.lon,
+      status: 'pending' // Reset về pending
     });
 
-    // Validate that at least one field is being edited
-    if (Object.keys(editData).length === 0) {
-      return res.status(400).json({
-        status: "error",
-        message: "No fields provided for editing",
-        data: null,
-      });
-    }
-
-    // Validate data format
-    if (editData.name && (typeof editData.name !== 'string' || editData.name.trim().length === 0)) {
-      return res.status(400).json({
-        status: "error",
-        message: "Invalid cafe name format",
-        data: null,
-      });
-    }
-
-    if (editData.phone_number && (typeof editData.phone_number !== 'string' || editData.phone_number.trim().length === 0)) {
-      return res.status(400).json({
-        status: "error",
-        message: "Invalid phone number format",
-        data: null,
-      });
-    }
-
-    if (editData.open_time && !/^\d{2}:\d{2}(:\d{2})?$/.test(editData.open_time)) {
-      return res.status(400).json({
-        status: "error",
-        message: "Invalid open_time format. Expected HH:MM or HH:MM:SS",
-        data: null,
-      });
-    }
-
-    if (editData.close_time && !/^\d{2}:\d{2}(:\d{2})?$/.test(editData.close_time)) {
-      return res.status(400).json({
-        status: "error",
-        message: "Invalid close_time format. Expected HH:MM or HH:MM:SS",
-        data: null,
-      });
-    }
-
-    // Validate menu_items if provided
-    if (editData.menu_items) {
-      if (!Array.isArray(editData.menu_items)) {
-        return res.status(400).json({
-          status: "error",
-          message: "menu_items must be an array",
-          data: null,
-        });
-      }
-
-      for (let item of editData.menu_items) {
-        if (!item.item_name || typeof item.item_name !== 'string') {
-          return res.status(400).json({
-            status: "error",
-            message: "Each menu item must have a valid item_name",
-            data: null,
-          });
-        }
-
-        if (item.price === undefined || isNaN(parseFloat(item.price))) {
-          return res.status(400).json({
-            status: "error",
-            message: "Each menu item must have a valid price",
-            data: null,
-          });
-        }
-      }
-    }
-
-    // Validate cafe_images if provided
-    if (editData.cafe_images) {
-      if (!Array.isArray(editData.cafe_images)) {
-        return res.status(400).json({
-          status: "error",
-          message: "cafe_images must be an array of URLs",
-          data: null,
-        });
-      }
-
-      for (let image of editData.cafe_images) {
-        if (typeof image !== 'string' || image.trim().length === 0) {
-          return res.status(400).json({
-            status: "error",
-            message: "All cafe_images must be non-empty strings",
-            data: null,
-          });
-        }
-      }
-    }
-
-    // Handle main_image file upload if provided
-    let imageUrl = null;
-    if (req.file) {
-      imageUrl = `/uploads/${req.file.filename}`;
-      editData.main_image = imageUrl;
-    }
-
-    // Create edit request in database
-    const editRequest = await EditRequest.create({
-      cafe_id: id,
-      user_id: userId,
-      data: editData,
-      image_url: imageUrl,
-      status: 'PENDING'
-    });
-
-    return res.status(201).json({
-      status: "success",
-      message: "Edit request created successfully. Awaiting admin approval.",
-      data: {
-        id: editRequest.id,
-        cafe_id: editRequest.cafe_id,
-        status: editRequest.status,
-        created_at: addHours(editRequest.created_at, 14),
-        request_fields: Object.keys(editData)
-      },
-    });
+    return res.json({ status: "success", message: "Cập nhật thành công!", data: cafe });
   } catch (error) {
-    console.error("Error in createEditRequest:", error);
-    return res.status(500).json({
-      status: "error",
-      message: "Internal server error",
-      data: null,
-    });
+    return res.status(500).json({ status: "error", message: error.message });
   }
 };
 
+// ==================== ADMIN FUNCTIONS ====================
+
+// 6. Admin lấy danh sách Pending
+exports.listRequests = async (req, res) => {
+  try {
+    const { status } = req.query;
+    const whereClause = { status: status || 'pending' };
+
+    const cafes = await Cafe.findAll({
+      where: whereClause,
+      order: [['createdAt', 'DESC']]
+    });
+
+    return res.json({ status: "success", data: cafes });
+  } catch (error) {
+    return res.status(500).json({ status: "error", message: error.message });
+  }
+};
+
+// 7. Admin duyệt/từ chối
+exports.processRequest = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { action } = req.body;
+    const cafe = await Cafe.findByPk(id);
+    if (!cafe) return res.status(404).json({ message: "Not found" });
+
+    if (action === 'approve') cafe.status = 'active';
+    else if (action === 'reject') cafe.status = 'rejected';
+    
+    await cafe.save();
+    return res.json({ status: "success", message: `Đã ${action}`, data: cafe });
+  } catch (error) {
+    return res.status(500).json({ status: "error", message: error.message });
+  }
+};

@@ -1,37 +1,68 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { Button } from '../components/ui/button';
+import Http from '@/services/Http'; // Import Http service (đã fix ở bước trước)
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/contexts/AuthContext';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
-  const [cafes] = useState([]);
-  const [loading] = useState(false);
+  const [cafes, setCafes] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // TODO: Fetch pending cafes for approval when API is ready
-  // useEffect(() => {
-  //   fetchPendingCafes();
-  // }, []);
-
+  const fetchRequests = async () => {
+    try{
+      setLoading(true);
+      const response = await Http.get('/admin/requests?status=pending');
+      setRequests(response.data.data);
+    } catch (error) {
+      console.error("Error fetching requests:", error);
+    }
+    finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+  const handleProcess = async (id , action) => {
+    if(!window.confirm(`本当にこのリクエストを${action === 'approve' ? '承認' : '拒否'}しますか？`)) {
+      return;
+    }
+    try{
+      await Http.post(`/admin/requests/${id}`, { action });
+      setRequests(requests.filter(req => req.id !== id));
+      alert(`リクエストが${action === 'approve' ? '承認' : '拒否'}されました。`); 
+    }
+    catch (error) {
+      console.error(`Error processing request:`, error);
+      alert("エラーが発生しました: " + (error.response?.data?.message || error.message));
+    }
+  };
+  if (loading) return <div className="text-center py-20"> ローディング中...</div>;
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            管理者ダッシュボード
-          </h1>
-          <p className="text-gray-600">
-            ようこそ、{user?.username}さん
-          </p>
+        <div className="mb-8 flex justify-between items-end">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              管理者ダッシュボード
+            </h1>
+            <p className="text-gray-600">
+              ようこそ、{user?.username}さん
+            </p>
+          </div>
+          <Button onClick={fetchRequests} variant="outline" className="text-sm">
+            更新
+          </Button>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">承認待ちカフェ</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
+                <p className="text-gray-600 text-sm font-medium">承認待ち</p>
+                <p className="text-3xl font-bold text-gray-900 mt-2">{requests.length}</p>
               </div>
               <div className="bg-blue-100 p-3 rounded-lg">
                 <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,80 +71,75 @@ const AdminDashboard = () => {
               </div>
             </div>
           </div>
-
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">登録済みカフェ</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">3</p>
-              </div>
-              <div className="bg-green-100 p-3 rounded-lg">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">レビュー</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">8</p>
-              </div>
-              <div className="bg-yellow-100 p-3 rounded-lg">
-                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Pending Approvals Section */}
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
             承認待ちカフェ
+            {loading && <span className="text-sm font-normal text-gray-500">(ローディング中...)</span>}
           </h2>
 
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-            </div>
-          ) : cafes.length === 0 ? (
-            <div className="text-center py-12">
-              <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-              </svg>
-              <p className="text-gray-600 text-lg">承認待ちのカフェはありません</p>
+             <div className="text-center py-10">ローディング中...</div>
+          ) : requests.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              <p>現在、承認待ちのリクエストはありません。</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">カフェ名</th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">住所</th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">アクション</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cafes.map(cafe => (
-                    <tr key={cafe.id} className="border-b hover:bg-gray-50">
-                      <td className="px-6 py-4 text-sm text-gray-900">{cafe.name}</td>
-                      <td className="px-6 py-4 text-sm text-gray-600">{cafe.address}</td>
-                      <td className="px-6 py-4 text-sm space-x-2">
-                        <Button className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 text-xs">
-                          承認
-                        </Button>
-                        <Button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 text-xs">
-                          拒否
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="grid grid-cols-1 gap-6">
+              {requests.map((req) => (
+                <div key={req.id} className="border rounded-lg p-4 flex flex-col md:flex-row gap-4 hover:shadow-lg transition-shadow bg-gray-50">
+                  
+                  <div className="w-full md:w-48 h-32 bg-gray-200 rounded-md overflow-hidden flex-shrink-0">
+                    {req.main_image ? (
+                        <img 
+                        src={req.main_image.startsWith('http') ? req.main_image : `http://localhost:3000${req.main_image}`} 
+                        alt={req.name} 
+                        className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
+                    )}
+                  </div>
+
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start">
+                        <h3 className="text-xl font-bold text-gray-800">{req.name}</h3>
+                        <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200">
+                            承認待ている
+                        </Badge>
+                    </div>
+                    <p className="text-gray-600 text-sm mt-1"> 住所： {req.address}</p>
+                    <div className="flex gap-4 text-xs text-gray-500 mt-2">
+                        <span>{req.open_time?.slice(0,5)} - {req.close_time?.slice(0,5)}</span>
+                        <span>{req.phone_number || 'N/A'}</span>
+                    </div>
+                    
+                    <div className="flex gap-2 mt-3 flex-wrap">
+                        {req.has_wifi && <span className="text-xs bg-gray-200 px-2 py-1 rounded">Wifi</span>}
+                        {req.has_parking && <span className="text-xs bg-gray-200 px-2 py-1 rounded">Parking</span>}
+                        {req.has_air_conditioning && <span className="text-xs bg-gray-200 px-2 py-1 rounded">A/C</span>}
+                    </div>
+                  </div>
+
+                  <div className="flex md:flex-col gap-2 justify-center border-t md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-4 mt-4 md:mt-0">
+                    <Button 
+                      onClick={() => handleProcess(req.id, 'approve')}
+                      className="bg-green-600 hover:bg-green-700 text-white w-full"
+                    >
+                      承認
+                    </Button>
+                    <Button 
+                      onClick={() => handleProcess(req.id, 'reject')}
+                      variant="destructive"
+                      className="w-full bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      拒否
+                    </Button>
+                  </div>
+
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -123,4 +149,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-
