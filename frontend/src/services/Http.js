@@ -23,6 +23,9 @@ Http.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      if (originalRequest.url.includes('/login')) {
+        return Promise.reject(error);
+      }
       // Token expired or invalid
       localStorage.removeItem('accessToken');
       localStorage.removeItem('user');
