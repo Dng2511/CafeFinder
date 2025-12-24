@@ -3,6 +3,7 @@ const Cafe = require("../../models/Cafe");
 const { addHours } = require("../../../common/time");
 const MenuItem = require("../../models/MenuItem");
 const CafeImage = require("../../models/CafeImage");
+const EditRequest = require("../../models/EditRequest");
 const openai = require("../../../libs/openai");
 const findByDistance = require("../../../libs/findByDistance");
 

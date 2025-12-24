@@ -69,6 +69,17 @@ CREATE TABLE reviews (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE edit_requests (
+    id SERIAL PRIMARY KEY,
+    cafe_id INT NOT NULL REFERENCES cafes(id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    data JSONB NOT NULL,
+    image_url TEXT,
+    status VARCHAR(20) NOT NULL CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED')) DEFAULT 'PENDING',
+    rejection_reason TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 INSERT INTO users (username, email, password_hash, role) VALUES
 ('customer01', 'customer01@example.com', 'hash_customer01', 'customer'),

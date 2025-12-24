@@ -4,8 +4,14 @@ const ReviewController = require("../apps/controllers/apis/review");
 const FavoriteController = require("../apps/controllers/apis/favorite");
 const UserController = require("../apps/controllers/apis/user");
 const verifyToken = require("../apps/middlewares/verifyToken");
-const upload = require("../apps/middlewares/upload");
-const { isAdmin } = require("../apps/middlewares/checkRole");
+const checkLoggedIn = require("../apps/middlewares/checkLoggedIn");
+const {
+  checkRole,
+  isAdmin,
+  isCustomer,
+} = require("../apps/middlewares/checkRole");
+const verifyToken = require('../apps/middlewares/verifyToken');
+const upload = require('../apps/middlewares/upload');
 
 const router = express.Router();
 
@@ -17,6 +23,7 @@ router.get("/me", verifyToken, UserController.getMe);
 // ==================== CAFE ROUTES (PUBLIC) ====================
 router.get("/cafes", CafeController.index);
 router.get("/cafes/:id", CafeController.searchById);
+router.post("/cafes/:id/edit-requests", verifyToken, upload.single('main_image'), CafeController.createEditRequest);
 
 // ==================== CAFE ROUTES (USER - QUAN TRỌNG) ====================
 // 1. Lấy danh sách quán của tôi (Route bạn đang thiếu)
