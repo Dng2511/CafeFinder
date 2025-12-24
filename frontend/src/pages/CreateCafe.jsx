@@ -80,7 +80,7 @@ const CreateCafe = () => {
         await Http.post('/requests', data, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
-        alert('Yêu cầu thêm quán đã được gửi thành công!');
+        alert('カフェの登録リクエストが正常に送信されました！');
         navigate('/');
     } catch (error) {
         console.error(error);
@@ -91,48 +91,48 @@ const CreateCafe = () => {
     };
     return (
         <div className="max-w-3xl mx-auto py-10 px-4">
-      <h1 className="text-3xl font-bold mb-8 text-center">Đăng Ký Quán Mới</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">新規カフェ登録</h1>
       
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md">
         
         {/* === THÔNG TIN CƠ BẢN === */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <Label htmlFor="name">Tên quán (*)</Label>
+                <Label htmlFor="name">カフェ名 (*)</Label>
                 <Input id="name" name="name" required value={formData.name} onChange={handleChange} />
             </div>
             <div>
-                <Label htmlFor="address">Địa chỉ (*)</Label>
+                <Label htmlFor="address">住所 (*)</Label>
                 <Input id="address" name="address" required value={formData.address} onChange={handleChange} />
             </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-                <Label htmlFor="phone_number">SĐT</Label>
+                <Label htmlFor="phone_number">電話番号</Label>
                 <Input id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleChange} />
             </div>
             <div>
-                <Label htmlFor="open_time">Giờ mở</Label>
+                <Label htmlFor="open_time">開店時間</Label>
                 <Input type="time" id="open_time" name="open_time" value={formData.open_time} onChange={handleChange} />
             </div>
             <div>
-                <Label htmlFor="close_time">Giờ đóng</Label>
+                <Label htmlFor="close_time">閉店時間</Label>
                 <Input type="time" id="close_time" name="close_time" value={formData.close_time} onChange={handleChange} />
             </div>
         </div>
 
         {/* === TIỆN ÍCH (CHECKBOX) === */}
         <div className="border p-4 rounded-md">
-            <Label className="mb-2 block text-lg">Tiện ích</Label>
+            <Label className="mb-2 block text-lg">設備・サービス</Label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {[
-                    { key: 'has_wifi', label: 'Wifi miễn phí' },
-                    { key: 'has_parking', label: 'Chỗ để xe' },
-                    { key: 'has_air_conditioning', label: 'Máy lạnh' },
-                    { key: 'has_power_outlet', label: 'Ổ cắm điện' },
-                    { key: 'is_quiet', label: 'Yên tĩnh' },
-                    { key: 'no_smoking', label: 'Không hút thuốc' },
+                    { key: 'has_wifi', label: '無料Wi-Fi' },
+                    { key: 'has_parking', label: '駐車場' },
+                    { key: 'has_air_conditioning', label: 'エアコン' },
+                    { key: 'has_power_outlet', label: '電源あり' },
+                    { key: 'is_quiet', label: '静か' },
+                    { key: 'no_smoking', label: '禁煙' },
                 ].map((item) => (
                     <label key={item.key} className="flex items-center space-x-2 cursor-pointer select-none">
                         <input 
@@ -150,7 +150,7 @@ const CreateCafe = () => {
 
         {/* === BẢN ĐỒ CHỌN VỊ TRÍ === */}
         <div>
-            <Label>Vị trí trên bản đồ (Click để chọn)</Label>
+            <Label>地図上の位置（クリックして選択）</Label>
             <div className="h-[300px] w-full mt-2 border rounded overflow-hidden relative z-0">
                 <MapContainer center={[21.0285, 105.8542]} zoom={13} scrollWheelZoom={true} style={{ height: '100%', width: '100%' }}>
                     <TileLayer
@@ -161,18 +161,18 @@ const CreateCafe = () => {
                 </MapContainer>
             </div>
             <p className="text-sm text-gray-500 mt-1">
-                Tọa độ đã chọn: {position.lat.toFixed(5)}, {position.lng.toFixed(5)}
+                選択された座標: {position.lat.toFixed(5)}, {position.lng.toFixed(5)}
             </p>
         </div>
 
         {/* === UPLOAD ẢNH === */}
         <div>
-          <Label htmlFor="images">Hình ảnh</Label>
+          <Label htmlFor="images">画像</Label>
           <Input id="images" type="file" multiple accept="image/*" onChange={handleFileChange} />
         </div>
 
         <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white" disabled={loading}>
-          {loading ? "Đang gửi..." : "Gửi yêu cầu"}
+          {loading ? "送信中..." : "リクエストを送信"}
         </Button>
       </form>
     </div>
