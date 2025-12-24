@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1c478f72-821f-447a-a851-9376a90d4ecb" name="Changes" comment="reolved conflicts">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/CafeFinder.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/apps/middlewares/checkRole.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/ProtectedRoute.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/contexts/AuthContext.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/lib/authUtils.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/lib/validation.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/AdminDashboard.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/Login.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/Register.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/services/AuthApi.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/apps/controllers/apis/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/apps/controllers/apis/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/apps/middlewares/checkLoggedIn.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/apps/middlewares/checkLoggedIn.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/apps/middlewares/verifyToken.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/apps/middlewares/verifyToken.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/routers/web.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routers/web.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/services/Http.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/Http.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;phongviet&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Dng2511/CafeFinder.git&quot;,
+    &quot;accountId&quot;: &quot;e36af9b9-c236-468c-a85b-8341d442d877&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="35pqIJwyYwALXHxAPdHAnTAMMz5" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Database Script.da_merge.sql.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "Merging feature/api__cafe__info__edit",
+    "ignore.virus.scanning.warn.message": "true",
+    "javascript.preferred.runtime.type.id": "node",
+    "last_opened_file_path": "D:/OneDrive - Hanoi University of Science and Technology/ITSS Japanese 1/CafeFinder/backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2025.2.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ],
+    "RunConfigurationTargetLRU": [
+      "a6a1dae3-a12f-4b0b-afd1-53e96d68f361"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\OneDrive - Hanoi University of Science and Technology\ITSS Japanese 1\CafeFinder\backend" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="da_merge.sql" type="DatabaseScript" editBeforeRun="true" temporary="true" nameIsGenerated="true">
+      <script-file value="$PROJECT_DIR$/backend/da_merge.sql" />
+      <script-mode>FILE</script-mode>
+      <data-source id="a6a1dae3-a12f-4b0b-afd1-53e96d68f361" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Database Script.da_merge.sql" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.29346.143" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="30c888f8-e4d6-43ba-bc7a-429523f0222c" name="Changes" comment="" />
+      <created>1763817279311</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1763817279311</updated>
+      <workItem from="1763817280619" duration="4193000" />
+      <workItem from="1763993108218" duration="103000" />
+      <workItem from="1764079301997" duration="1660000" />
+      <workItem from="1764127901994" duration="2937000" />
+      <workItem from="1764169461027" duration="15000" />
+      <workItem from="1764936481615" duration="21000" />
+      <workItem from="1764942118487" duration="3024000" />
+      <workItem from="1765031593261" duration="588000" />
+      <workItem from="1765200579782" duration="2162000" />
+      <workItem from="1765285415124" duration="18000" />
+      <workItem from="1766496858069" duration="525000" />
+      <workItem from="1766497466178" duration="2909000" />
+      <workItem from="1766500407262" duration="434000" />
+    </task>
+    <task id="LOCAL-00001" summary=" thêm cột có ổ điện, yên tĩnh, cấm hút thuốc, category vào bảng quán trong đa ta bây">
+      <option name="closed" value="true" />
+      <created>1764080810153</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1764080810153</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Implemented Favourites API">
+      <option name="closed" value="true" />
+      <created>1764944454039</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1764944454039</updated>
+    </task>
+    <task id="LOCAL-00003" summary="added Favourite">
+      <option name="closed" value="true" />
+      <created>1765200618217</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1765200618217</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Done login register">
+      <option name="closed" value="true" />
+      <created>1766499612777</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1766499612777</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Done edit api">
+      <option name="closed" value="true" />
+      <created>1766500483351</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1766500483351</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value=" thêm cột có ổ điện, yên tĩnh, cấm hút thuốc, category vào bảng quán trong đa ta bây" />
+    <MESSAGE value="Implemented Favourites API" />
+    <MESSAGE value="added Favourite" />
+    <MESSAGE value="Done login register" />
+    <MESSAGE value="Done edit api" />
+    <MESSAGE value="reolved conflicts" />
+    <option name="LAST_COMMIT_MESSAGE" value="reolved conflicts" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>
