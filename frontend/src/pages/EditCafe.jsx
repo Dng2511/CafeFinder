@@ -127,45 +127,45 @@ const EditCafe = () => {
     if (loading) return <div className="text-center py-20"> ローディング中...</div>;
     return (
     <div className="max-w-3xl mx-auto py-10 px-4">
-      <h1 className="text-3xl font-bold mb-8 text-center">Chỉnh sửa thông tin quán</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">カフェ情報の編集</h1>
       
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <Label>Tên quán (*)</Label>
+                <Label>カフェ名 (*)</Label>
                 <Input name="name" required value={formData.name} onChange={handleChange} />
             </div>
             <div>
-                <Label>Địa chỉ (*)</Label>
+                <Label>住所 (*)</Label>
                 <Input name="address" required value={formData.address} onChange={handleChange} />
             </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-                <Label>SĐT</Label>
+                <Label>電話番号</Label>
                 <Input name="phone_number" value={formData.phone_number} onChange={handleChange} />
             </div>
             <div>
-                <Label>Giờ mở</Label>
+                <Label>開店時間</Label>
                 <Input type="time" name="open_time" value={formData.open_time} onChange={handleChange} />
             </div>
             <div>
-                <Label>Giờ đóng</Label>
+                <Label>閉店時間</Label>
                 <Input type="time" name="close_time" value={formData.close_time} onChange={handleChange} />
             </div>
         </div>
 
         <div className="border p-4 rounded-md">
-            <Label className="mb-2 block text-lg">Tiện ích</Label>
+            <Label className="mb-2 block text-lg">設備・サービス</Label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {[
-                    { key: 'has_wifi', label: 'Wifi miễn phí' },
-                    { key: 'has_parking', label: 'Chỗ để xe' },
-                    { key: 'has_air_conditioning', label: 'Máy lạnh' },
-                    { key: 'has_power_outlet', label: 'Ổ cắm điện' },
-                    { key: 'is_quiet', label: 'Yên tĩnh' },
-                    { key: 'no_smoking', label: 'Không hút thuốc' },
+                    { key: 'has_wifi', label: '無料Wi-Fi' },
+                    { key: 'has_parking', label: '駐車場' },
+                    { key: 'has_air_conditioning', label: 'エアコン' },
+                    { key: 'has_power_outlet', label: '電源あり' },
+                    { key: 'is_quiet', label: '静か' },
+                    { key: 'no_smoking', label: '禁煙' },
                 ].map((item) => (
                     <label key={item.key} className="flex items-center space-x-2 cursor-pointer">
                         <input type="checkbox" name={item.key} checked={formData[item.key]} onChange={handleChange} className="w-4 h-4" />
@@ -176,7 +176,7 @@ const EditCafe = () => {
         </div>
 
         <div>
-            <Label>Vị trí (Click để cập nhật lại nếu cần)</Label>
+            <Label>位置（必要に応じてクリックして更新）</Label>
             <div className="h-[300px] w-full mt-2 border rounded overflow-hidden relative z-0">
                 {position && (
                     <MapContainer center={position} zoom={15} scrollWheelZoom={true} style={{ height: '100%', width: '100%' }}>
@@ -188,14 +188,14 @@ const EditCafe = () => {
         </div>
 
         <div>
-          <Label>Cập nhật ảnh mới (Bỏ qua nếu giữ ảnh cũ)</Label>
+          <Label>新しい画像をアップロード（古い画像を保持する場合はスキップ）</Label>
           <Input type="file" multiple accept="image/*" onChange={(e) => setImages(e.target.files)} />
         </div>
 
         <div className="flex gap-4">
-            <Button type="button" variant="secondary" className="w-1/3" onClick={() => navigate('/my-cafes')}>Hủy</Button>
+            <Button type="button" variant="secondary" className="w-1/3" onClick={() => navigate('/my-cafes')}>キャンセル</Button>
             <Button type="submit" className="w-2/3 bg-blue-600 hover:bg-blue-700 text-white" disabled={submitting}>
-            {submitting ? "Đang lưu..." : "Lưu thay đổi & Gửi duyệt"}
+            {submitting ? "保存中..." : "変更を保存して承認をリクエスト"}
             </Button>
         </div>
       </form>
